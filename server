@@ -13,6 +13,8 @@ class UdpServer
 
   def run
     Socket.do_not_reverse_lookup = true
+    interrupted = false
+    trap("INT") { interrupted = true }
     incoming = UDPSocket.new
     incoming.bind('0.0.0.0', @port)
     mark = Time.new
@@ -25,6 +27,7 @@ class UdpServer
         @slices.rollup
         mark = Time.new
       end
+      break if interrupted
     end
   end
 
