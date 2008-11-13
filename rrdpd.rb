@@ -24,10 +24,12 @@ class Configuration
 end
 
 class Message
+  attr_reader :source
   attr_reader :name
   attr_reader :value
 
-  def initialize(name, value)
+  def initialize(source, name, value)
+    @source = source
     @name = name
     @value = value
   end
@@ -77,26 +79,42 @@ class Slices
   end
 end
 
-class Slice
-  def initialize(time)
+class SampleSet
+  def initialize(time, name)
     @time = time
-    @samples = {}
+    @name = name
+    @values = []
   end
 
   def add(message)
-    key = message.name
-    if !@samples.has_key?(key) then
-      @samples[key] = []
-    end
-    @samples[key] << message.value
+    @values << message.value
   end
 
   def rollup(writers)
     writers.each do |writer|
-      @samples.each do |key, value|
-        writer.rollup(@time, key, value)
-        Configuration.log.info(key + " processed " + value.length.to_s + " samples")
-      end
+      writer.rollup(@time, @name, @values)
+      Configuration.log.info(@name + " processed " + @values.length.to_s + " samples")
+    end
+  end
+end
+
+class Slice
+  def initialize(time)
+    @time = time
+    @sets = {}
+  end
+
+  def add(message)
+    key = message.name
+    if !@sets.has_key?(key) then
+      @sets[key] = SampleSet.new(@time, key)
+    end
+    @sets[key].add(message)
+  end
+
+  def rollup(writers)
+    @sets.each do |key, value|
+      value.rollup(writers)
     end
   end
 end

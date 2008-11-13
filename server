@@ -32,9 +32,10 @@ class UdpServer
 
   private
   def process(raw)
-    Configuration.log.debug(raw[1][2] + ": " + raw[0])
+    source = raw[1][2]
+    Configuration.log.debug(source + ": " + raw[0])
     fields = raw[0].split(":")
-    message = Message.new(fields[0], fields[1].to_f)
+    message = Message.new(source, fields[0], fields[1].to_f)
     @slices.add(message)
   end
 end
