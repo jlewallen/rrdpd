@@ -36,21 +36,22 @@ class Slices
     get_slice.add(message)
   end
 
-  def rollup
-    get_closed_slices.each do |slice|
+  def rollup(force=false)
+    get_closed_slices(force).each do |slice|
       slice.rollup(@writers)
     end
   end
 
   private
-  def get_closed_slices
+  def get_closed_slices(force)
     open = get_slice_number
     closed = []
     @slices.delete_if do |key, value|
-      if key < open then
+      closing = (key < open) || force
+      if closing then
         closed << value
       end
-      key < open
+      closing
     end
     closed
   end

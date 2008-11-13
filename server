@@ -45,3 +45,4 @@ writers = [ YesOrNo.new(cfg), Quartiles.new(cfg) ]
 slices = Slices.new(cfg, writers)
 server = UdpServer.new(slices, 6311)
 server.run
+slices.rollup(true)
