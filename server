@@ -33,7 +33,7 @@ class UdpServer
 
   private
   def process(raw)
-    @log.info("Received " + raw.inspect)
+    @log.info(raw[1][2] + ": " + raw[0])
     fields = raw[0].split(":")
     message = Message.new(fields[0], fields[1].to_f)
     @slices.add(message)
