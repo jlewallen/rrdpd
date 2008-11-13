@@ -7,7 +7,6 @@ require 'logger'
 class UdpServer
   def initialize(slices, port)
     @slices = slices
-    @log = Logger.new(STDOUT)
     @port = port
   end
 
@@ -23,7 +22,7 @@ class UdpServer
         process(incoming.recvfrom(256))
       end
       if Time.new - mark > 10 then
-        @log.info("Applying Writers...")
+        Configuration.log.info("Applying Writers...")
         @slices.rollup
         mark = Time.new
       end
@@ -33,7 +32,7 @@ class UdpServer
 
   private
   def process(raw)
-    @log.info(raw[1][2] + ": " + raw[0])
+    Configuration.log.debug(raw[1][2] + ": " + raw[0])
     fields = raw[0].split(":")
     message = Message.new(fields[0], fields[1].to_f)
     @slices.add(message)
@@ -41,6 +40,8 @@ class UdpServer
 end
 
 cfg = Configuration.new
+Configuration.log = Logger.new(STDOUT)
+Configuration.log.level = Logger::INFO
 writers = [ YesOrNo.new(cfg), Quartiles.new(cfg) ]
 slices = Slices.new(cfg, writers)
 server = UdpServer.new(slices, 6311)

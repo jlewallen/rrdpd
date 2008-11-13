@@ -5,7 +5,6 @@ require 'logger'
 class RrdWriter
 	def initialize(cfg)
 		@cfg = cfg
-		@log = Logger.new(STDOUT)
 	end
 
 	def get_rrd_file(name)
@@ -13,7 +12,7 @@ class RrdWriter
 	end
 
 	def rrd(command)
-		@log.info(command)
+		Configuration.log.debug(command)
 		system("/usr/bin/rrdtool #{command}")
 	end
 end

@@ -13,6 +13,14 @@ class Configuration
     @seconds_per_slice = seconds_per_slice
     @data_directory = data_directory
   end
+
+  def Configuration.log=(log)
+    @@log = log
+  end
+
+  def Configuration.log
+    @@log
+  end
 end
 
 class Message
@@ -87,6 +95,7 @@ class Slice
     writers.each do |writer|
       @samples.each do |key, value|
         writer.rollup(@time, key, value)
+        Configuration.log.info(key + " processed " + value.length.to_s + " samples")
       end
     end
   end
