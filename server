@@ -1,0 +1,44 @@
+#!/usr/bin/env ruby
+
+require 'socket'
+require 'rrdpd'
+require 'logger'
+
+class UdpServer
+  def initialize(slices, port)
+    @slices = slices
+    @log = Logger.new(STDOUT)
+    @port = port
+  end
+
+  def run
+    Socket.do_not_reverse_lookup = true
+    incoming = UDPSocket.new
+    incoming.bind('0.0.0.0', @port)
+    mark = Time.new
+    loop do
+      if IO.select([ incoming ], [], [], 1) then
+        process(incoming.recvfrom(256))
+      end
+      if Time.new - mark > 10 then
+        @log.info("Applying Writers...")
+        @slices.rollup
+        mark = Time.new
+      end
+    end
+  end
+
+  private
+  def process(raw)
+    @log.info("Received " + raw.inspect)
+    fields = raw[0].split(":")
+    message = Message.new(fields[0], fields[1].to_f)
+    @slices.add(message)
+  end
+end
+
+cfg = Configuration.new
+writers = [ YesOrNo.new(cfg), Quartiles.new(cfg) ]
+slices = Slices.new(cfg, writers)
+server = UdpServer.new(slices, 6311)
+server.run
