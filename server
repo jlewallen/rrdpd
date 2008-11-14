@@ -3,6 +3,7 @@
 require 'socket'
 require 'rrdpd'
 require 'logger'
+require 'yaml'
 
 class UdpServer
   def initialize(slices, port)
@@ -40,7 +41,8 @@ class UdpServer
   end
 end
 
-cfg = Configuration.new(Pathname.new("/home/jlewalle/rrdpd/data"))
+settings = YAML.load_file("rrdpd.conf")
+cfg = Configuration.new(Pathname.new(settings["data"]))
 Configuration.log = Logger.new(STDOUT)
 Configuration.log.level = Logger::INFO
 writers = [ YesOrNo.new(cfg), Quartiles.new(cfg) ]
