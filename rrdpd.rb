@@ -9,9 +9,9 @@ class Configuration
   attr_reader :seconds_per_slice
   attr_reader :data
 
-  def initialize(seconds_per_slice=10, data=Pathname.new("/tmp"))
-    @seconds_per_slice = seconds_per_slice
+  def initialize(data, seconds_per_slice=10)
     @data = data
+    @seconds_per_slice = seconds_per_slice
   end
 
   def Configuration.log=(log)

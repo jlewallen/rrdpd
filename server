@@ -40,7 +40,7 @@ class UdpServer
   end
 end
 
-cfg = Configuration.new
+cfg = Configuration.new(Pathname.new("/home/jlewalle/rrdpd/data"))
 Configuration.log = Logger.new(STDOUT)
 Configuration.log.level = Logger::INFO
 writers = [ YesOrNo.new(cfg), Quartiles.new(cfg) ]
