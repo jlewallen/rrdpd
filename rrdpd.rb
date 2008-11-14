@@ -7,11 +7,11 @@ require 'writers/quartiles.rb'
 
 class Configuration
   attr_reader :seconds_per_slice
-  attr_reader :data_directory
+  attr_reader :data
 
-  def initialize(seconds_per_slice=10, data_directory="/tmp")
+  def initialize(seconds_per_slice=10, data=Pathname.new("/tmp"))
     @seconds_per_slice = seconds_per_slice
-    @data_directory = data_directory
+    @data = data
   end
 
   def Configuration.log=(log)
