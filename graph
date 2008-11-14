@@ -1,0 +1,103 @@
+#!/bin/bash
+#
+
+pushd /tmp
+
+rrdtool graph temp1.png -w 600 -h 250 --start -3hours --end now --title "test combined" \
+								DEF:ok=yesno-test.rrd:ok:AVERAGE \
+								DEF:fail=yesno-test.rrd:fail:AVERAGE \
+								AREA:ok#AAFFAA:STACK \
+								AREA:fail#FFAAAA:STACK \
+								LINE1:ok#737373
+
+rrdtool graph temp2.png -w 600 -h 250 --start -3hours --end now --title "test successes" \
+								DEF:ok=yesno-test.rrd:ok:AVERAGE \
+								DEF:fail=yesno-test.rrd:fail:AVERAGE \
+								AREA:ok#AAFFAA \
+								LINE1:ok#797979
+
+rrdtool graph temp3.png -w 600 -h 250 --start -3hours --end now --title "test failures" \
+								DEF:ok=yesno-test.rrd:ok:AVERAGE \
+								DEF:fail=yesno-test.rrd:fail:AVERAGE \
+								AREA:fail#FFAAAA \
+								LINE1:fail#797979
+
+rrdtool graph temp4.png -w 800 -h 350 --start -3hours --end now -l 0 --title "query" \
+								DEF:lo=quartiles-query.rrd:lo:AVERAGE \
+								DEF:hi=quartiles-query.rrd:hi:AVERAGE \
+								DEF:q1=quartiles-query.rrd:q1:AVERAGE \
+								DEF:q2=quartiles-query.rrd:q2:AVERAGE \
+								DEF:q3=quartiles-query.rrd:q3:AVERAGE \
+								AREA:q3#FFAAAA \
+								AREA:q2#AAFFAA \
+								AREA:q1#DDFFDD \
+								AREA:lo#FFFFFF \
+								LINE1:q2#797979
+
+rrdtool graph temp5.png -w 800 -h 350 --start -3hours --end now -l 0 --title "value" \
+								DEF:lo=quartiles-value.rrd:lo:AVERAGE \
+								DEF:hi=quartiles-value.rrd:hi:AVERAGE \
+								DEF:q1=quartiles-value.rrd:q1:AVERAGE \
+								DEF:q2=quartiles-value.rrd:q2:AVERAGE \
+								DEF:q3=quartiles-value.rrd:q3:AVERAGE \
+								AREA:q3#F89D98 \
+								AREA:q2#95F19A \
+								AREA:q1#DDFFDE \
+								AREA:lo#FFFFFF \
+								LINE1:q2#797979
+
+rrdtool graph temp6.png -w 800 -h 350 --start -3hours --end now -l 0 --title "jacob" \
+								DEF:lo=quartiles-jacob.rrd:lo:AVERAGE \
+								DEF:hi=quartiles-jacob.rrd:hi:AVERAGE \
+								DEF:q1=quartiles-jacob.rrd:q1:AVERAGE \
+								DEF:q2=quartiles-jacob.rrd:q2:AVERAGE \
+								DEF:q3=quartiles-jacob.rrd:q3:AVERAGE \
+								AREA:q3#F89D98 \
+								AREA:q2#95F19A \
+								AREA:q1#DDFFDE \
+								AREA:lo#FFFFFF \
+								LINE1:q2#797979
+
+rrdtool graph temp7.png -w 800 -h 350 --start -3hours --end now -l 0 --title "andy" \
+								DEF:lo=quartiles-andy.rrd:lo:AVERAGE \
+								DEF:hi=quartiles-andy.rrd:hi:AVERAGE \
+								DEF:q1=quartiles-andy.rrd:q1:AVERAGE \
+								DEF:q2=quartiles-andy.rrd:q2:AVERAGE \
+								DEF:q3=quartiles-andy.rrd:q3:AVERAGE \
+								AREA:q3#F89D98 \
+								AREA:q2#95F19A \
+								AREA:q1#DDFFDE \
+								AREA:lo#FFFFFF \
+								LINE1:q2#797979
+
+rrdtool graph temp8.png -w 800 -h 350 --start -3hours --end now -l 0 --title "andy" \
+								DEF:lo=quartiles-wave1.rrd:lo:AVERAGE \
+								DEF:hi=quartiles-wave1.rrd:hi:AVERAGE \
+								DEF:q1=quartiles-wave1.rrd:q1:AVERAGE \
+								DEF:q2=quartiles-wave1.rrd:q2:AVERAGE \
+								DEF:q3=quartiles-wave1.rrd:q3:AVERAGE \
+								AREA:q3#F89D98 \
+								AREA:q2#95F19A \
+								AREA:q1#DDFFDE \
+								AREA:lo#FFFFFF \
+								LINE1:q2#797979
+
+rrdtool graph temp9.png -w 800 -h 350 --start -3hours --end now -l 0 --title "andy" \
+								DEF:lo=quartiles-wave2.rrd:lo:AVERAGE \
+								DEF:hi=quartiles-wave2.rrd:hi:AVERAGE \
+								DEF:q1=quartiles-wave2.rrd:q1:AVERAGE \
+								DEF:q2=quartiles-wave2.rrd:q2:AVERAGE \
+								DEF:q3=quartiles-wave2.rrd:q3:AVERAGE \
+								AREA:q3#F89D98 \
+								AREA:q2#95F19A \
+								AREA:q1#DDFFDE \
+								AREA:lo#FFFFFF \
+								LINE1:q2#797979
+
+mv *.png /var/www/graphs
+rm -rf /var/www/graphs/index.html
+for a in /var/www/graphs/*.png; do
+  file=`basename $a`
+  echo "<img src='$file' />" >> /var/www/graphs/index.html
+done
+popd
