@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 class Quartiles < RrdWriter
-	def rollup(time, name, samples)
+	def rollup(time, key, samples)
 		return if samples.length < 2
 		samples = samples.map { |x| x.to_i }
 		samples = samples.sort
@@ -11,8 +11,8 @@ class Quartiles < RrdWriter
 		lo_c = (number / 2).floor
 		hi_c = number - lo_c
 
-		ctor = Struct.new(:time, :name, :lo, :q1, :q2, :q3, :hi, :total)
-		data = ctor.new(time, name, 0, 0, 0, 0, 0, 0)
+		ctor = Struct.new(:time, :lo, :q1, :q2, :q3, :hi, :total)
+		data = ctor.new(time, 0, 0, 0, 0, 0, 0)
 
 		if lo_c > 0 && hi_c > 0 then
 			lo_samples = samples.slice(0, lo_c)
@@ -32,13 +32,13 @@ class Quartiles < RrdWriter
 			data.total = number
 		end
 
-		save(data)
+		save(key, data)
 	end
 
-	def save(data)
-		rrdfile = get_rrd_file("quartiles-" + data.name)
-		if !Pathname.new(rrdfile).file? then
-			command  = "create #{rrdfile} "
+	def save(key, data)
+		file = get_rrd_file("quartiles", key)
+		if !Pathname.new(file).file? then
+			command  = "create #{file} "
 			command += " --step 10 "
 			command += " --start 1211478990 "
 			command += " DS:q1:GAUGE:600:0:U "
@@ -53,7 +53,7 @@ class Quartiles < RrdWriter
 			rrd(command)
 		end
 		values = [ data.time, data.q1, data.q2, data.q3, data.lo, data.hi, data.total ].map { |value| value.to_s }
-		command = "update #{rrdfile} " + values.join(":")
+		command = "update #{file} " + values.join(":")
 		rrd(command)
 	end
 end

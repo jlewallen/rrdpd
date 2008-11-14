@@ -7,8 +7,8 @@ class RrdWriter
 		@cfg = cfg
 	end
 
-	def get_rrd_file(name)
-		file = @cfg.data.join(name.downcase + ".rrd")
+	def get_rrd_file(type, key)
+		file = @cfg.data.join(key.to_s.downcase + "-" + type + ".rrd")
 		dir = file.parent
 		if !dir.directory? then
 			dir.mkpath

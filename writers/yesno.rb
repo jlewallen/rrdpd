@@ -1,19 +1,19 @@
 #!/usr/bin/env ruby
 
 class YesOrNo < RrdWriter
-	def rollup(time, name, samples)
+	def rollup(time, key, samples)
 		counters = { :ok => 0, :fail => 0 }
 		samples.each do |value|
 			counters[value > 0 ? :ok : :fail] += 1
 		end
-		data = Struct.new(:time, :name, :ok, :fail).new(time, name, counters[:ok], counters[:fail])
-		save(data)
+		data = Struct.new(:time, :ok, :fail).new(time, counters[:ok], counters[:fail])
+		save(key, data)
 	end
 
-	def save(data)
-		rrdfile = get_rrd_file("yesno-" + data.name)
-		if !Pathname.new(rrdfile).file? then
-			command  = "create #{rrdfile} "
+	def save(key, data)
+		file = get_rrd_file("yesno", key)
+		if !Pathname.new(file).file? then
+			command  = "create #{file} "
 			command += " --step 10 "
 			command += " --start 1211478990 "
 			command += " DS:ok:GAUGE:600:0:U "
@@ -24,7 +24,7 @@ class YesOrNo < RrdWriter
 			rrd(command)
 		end
 		values = [ data.time, data.ok, data.fail ].map { |value| value.to_s }
-		command = "update #{rrdfile} " + values.join(":")
+		command = "update #{file} " + values.join(":")
 		rrd(command)
 	end
 end
