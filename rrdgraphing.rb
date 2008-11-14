@@ -61,7 +61,7 @@ class Area
   end
 
   def to_s
-    "AREA:#{@id}##{@color}" + (@stack ? ":STACK" : "")
+    "AREA:#{@id}##{@color}" + (@stack ? "::STACK" : "")
   end
 end
 
