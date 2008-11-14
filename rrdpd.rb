@@ -26,6 +26,14 @@ end
 class SampleSetKey
   attr_reader :name
 
+  def self.all(message)
+    SampleSetKey.new(message.name)
+  end
+
+  def self.machine(message)
+    SampleSetKey.new(message.source + "-" + message.name)
+  end
+
   def initialize(name)
     @name = name
   end
@@ -110,8 +118,8 @@ class Slice
   end
 
   def add(message)
-    key = SampleSetKey.new(message.name)
-    get(key).add(message)
+    get(SampleSetKey.all(message)).add(message)
+    get(SampleSetKey.machine(message)).add(message)
   end
 
   def rollup(writers)
