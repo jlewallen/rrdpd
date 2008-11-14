@@ -23,6 +23,30 @@ class Configuration
   end
 end
 
+class SampleSetKey
+  attr_reader :name
+
+  def initialize(name)
+    @name = name
+  end
+
+  def to_sym
+    @name.to_sym
+  end
+
+  def to_s
+    @name
+  end
+
+  def eql?(o)
+    o.is_a?(SampleSetKey) && @name == o.name
+  end
+  
+  def hash
+    @name.hash
+  end
+end
+
 class Message
   attr_reader :source
   attr_reader :name
@@ -80,9 +104,9 @@ class Slices
 end
 
 class SampleSet
-  def initialize(time, name)
+  def initialize(time, key)
     @time = time
-    @name = name
+    @key = key
     @values = []
   end
 
@@ -92,8 +116,8 @@ class SampleSet
 
   def rollup(writers)
     writers.each do |writer|
-      writer.rollup(@time, @name, @values)
-      Configuration.log.info(@name + " processed " + @values.length.to_s + " samples")
+      writer.rollup(@time, @key.to_s, @values)
+      Configuration.log.info(writer.class.name + " " + @key.to_s + " processed " + @values.length.to_s + " samples")
     end
   end
 end
@@ -101,21 +125,26 @@ end
 class Slice
   def initialize(time)
     @time = time
-    @sets = {}
+    @sets = { }
   end
 
   def add(message)
-    key = message.name
-    if !@sets.has_key?(key) then
-      @sets[key] = SampleSet.new(@time, key)
-    end
-    @sets[key].add(message)
+    key = SampleSetKey.new(message.name)
+    get(key).add(message)
   end
 
   def rollup(writers)
     @sets.each do |key, value|
       value.rollup(writers)
     end
+  end
+  
+  private
+  def get(key)
+    if !@sets.has_key?(key) then
+      @sets[key] = SampleSet.new(@time, key)
+    end
+    @sets[key]
   end
 end
 
