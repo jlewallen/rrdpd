@@ -27,7 +27,7 @@ class SampleSetKey
   attr_reader :name
 
   def self.all(message)
-    SampleSetKey.new(message.name)
+    SampleSetKey.new("all-" + message.name)
   end
 
   def self.machine(message)
