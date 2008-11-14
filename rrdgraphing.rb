@@ -128,18 +128,4 @@ class QuartilesGrapher < Grapher
   end
 end
 
-graphers = {
-  :yesno => YesNoGrapher.new,
-  :quartiles => QuartilesGrapher.new
-}
-
-cfg = Configuration.new(Pathname.new("/home/jlewalle/rrdpd/data"))
-Configuration.log = Logger.new(STDOUT)
-Configuration.log.level = Logger::INFO
-find = Finder.new(cfg)
-find.databases do |database|
-  grapher = graphers[database.type]
-  grapher.graph(database, database.output_name)
-end
-
 # EOF
