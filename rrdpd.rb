@@ -103,25 +103,6 @@ class Slices
   end
 end
 
-class SampleSet
-  def initialize(time, key)
-    @time = time
-    @key = key
-    @values = []
-  end
-
-  def add(message)
-    @values << message.value
-  end
-
-  def rollup(writers)
-    writers.each do |writer|
-      writer.rollup(@time, @key.to_s, @values)
-      Configuration.log.info(writer.class.name + " " + @key.to_s + " processed " + @values.length.to_s + " samples")
-    end
-  end
-end
-
 class Slice
   def initialize(time)
     @time = time
@@ -145,6 +126,25 @@ class Slice
       @sets[key] = SampleSet.new(@time, key)
     end
     @sets[key]
+  end
+end
+
+class SampleSet
+  def initialize(time, key)
+    @time = time
+    @key = key
+    @values = []
+  end
+
+  def add(message)
+    @values << message.value
+  end
+
+  def rollup(writers)
+    writers.each do |writer|
+      writer.rollup(@time, @key.to_s, @values)
+      Configuration.log.info(writer.class.name + " " + @key.to_s + " processed " + @values.length.to_s + " samples")
+    end
   end
 end
 
