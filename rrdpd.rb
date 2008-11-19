@@ -7,11 +7,17 @@ require 'writers/quartiles.rb'
 
 class Configuration
   attr_reader :seconds_per_slice
+  attr_reader :write_interval
   attr_reader :data
 
-  def initialize(data, seconds_per_slice=10)
+  def initialize(data, seconds_per_slice, write_interval)
     @data = data
     @seconds_per_slice = seconds_per_slice
+    @write_interval = write_interval
+  end
+
+  def port
+    6311
   end
 
   def Configuration.log=(log)

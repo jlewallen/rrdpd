@@ -6,9 +6,9 @@ require 'logger'
 require 'yaml'
 
 class UdpServer
-  def initialize(slices, port)
+  def initialize(slices, cfg)
     @slices = slices
-    @port = port
+    @cfg = cfg
   end
 
   def run
@@ -16,13 +16,13 @@ class UdpServer
     interrupted = false
     trap("INT") { interrupted = true }
     incoming = UDPSocket.new
-    incoming.bind('0.0.0.0', @port)
+    incoming.bind('0.0.0.0', @cfg.port)
     mark = Time.new
     loop do
       if IO.select([ incoming ], [], [], 1) then
         process(incoming.recvfrom(256))
       end
-      if Time.new - mark > 10 then
+      if Time.new - mark > @cfg.write_interval then
         Configuration.log.info("Applying Writers...")
         @slices.rollup
         mark = Time.new
@@ -42,11 +42,14 @@ class UdpServer
 end
 
 settings = YAML.load_file("rrdpd.conf")
-cfg = Configuration.new(Pathname.new(settings["data"]))
+data = Pathname.new(settings["data"])
+slice_interval = settings["slice-interval"].to_i
+write_interval = settings["write-interval"].to_i
+cfg = Configuration.new(data, slice_interval, write_interval)
 Configuration.log = Logger.new(STDOUT)
 Configuration.log.level = Logger::INFO
 writers = [ YesOrNo.new(cfg), Quartiles.new(cfg) ]
 slices = Slices.new(cfg, writers)
-server = UdpServer.new(slices, 6311)
+server = UdpServer.new(slices, cfg)
 server.run
 slices.rollup(true)
