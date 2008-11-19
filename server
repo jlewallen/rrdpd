@@ -41,11 +41,22 @@ class UdpServer
   end
 end
 
-settings = YAML.load_file("rrdpd.conf")
-data = Pathname.new(settings["data"])
-slice_interval = settings["slice-interval"].to_i
-write_interval = settings["write-interval"].to_i
-cfg = Configuration.new(data, slice_interval, write_interval)
+class ConfigurationFile
+  def initialize()
+    @settings = YAML.load_file("rrdpd.conf")
+  end
+
+  def to_configuration
+    data = Pathname.new(@settings["data"])
+    slice_interval = @settings["slice-interval"].to_i
+    write_interval = @settings["write-interval"].to_i
+    Configuration.new(data, slice_interval, write_interval)
+  end
+end
+
+cfg_file = ConfigurationFile.new
+cfg = cfg_file.to_configuration
+p cfg
 Configuration.log = Logger.new(STDOUT)
 Configuration.log.level = Logger::INFO
 writers = [ YesOrNo.new(cfg), Quartiles.new(cfg) ]
