@@ -8,8 +8,16 @@ You're in index of the Sources controller.
       <p class="name">
         <%= event.display_name %>
       </p>
-      <a class='renders' href="<%= url(:render, :source => @source.name, :event => event.name, :grapher => :yesno, :start_at => '1day', :end_at => 'now') %>">YesNo</a>
-      <a class='renders' href="<%= url(:render, :source => @source.name, :event => event.name, :grapher => :quartiles, :start_at => '1day', :end_at => 'now') %>">Quartiles</a>
+      <a class='renders'
+        title="<%= @source.name %>/<%= event.name %>/yesno"
+        href="<%= url(:render, :source => @source.name, :event => event.name, :grapher => :yesno, :start_at => '1day', :end_at => 'now') %>">
+        YesNo
+      </a>
+      <a class='renders'
+        title="<%= @source.name %>/<%= event.name %>/quartiles"
+        href="<%= url(:render, :source => @source.name, :event => event.name, :grapher => :quartiles, :start_at => '1day', :end_at => 'now') %>">
+        Quartiles
+      </a>
     </li>
   <% end %>
 </ul>
@@ -22,20 +30,29 @@ $(function() {
 
   global.initialize = function() {
     var self = this;
+    self.map = {};
     $('.renders').click(function(target) {
+      if ($(this).hasClass('visible'))
+      {
+        self.map[this.title].remove();
+        delete self.map[this.title];
+      }
+      else
+      {
+        var holder = self.renderGraph(this);
+        $('#canvas').append(holder);
+        self.map[this.title] = holder;
+      }
       $(this).toggleClass('visible');
-      self.render();
       return false;
     });
   };
 
-  global.render = function() {
-    var canvas = $('#canvas');
-    canvas.empty();
-    $('.renders.visible').each(function(i, target) {
-      canvas.append("<h2>" + target.href + "</h2>");
-      canvas.append("<img src='" + target.href + "' />");
-    });
+  global.renderGraph = function(target) {
+    var holder = $('<div></div>');
+    holder.append("<h1>" + target.title + "</h1>");
+    holder.append("<img src='" + target.href + "' />");
+    return holder;
   };
 
   global.initialize();
