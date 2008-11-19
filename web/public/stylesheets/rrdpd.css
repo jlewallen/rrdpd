@@ -13,3 +13,19 @@ ul.sources li {
   font-weight: bold;
   font-size: 16pt;
 }
+
+ul.events {
+}
+
+ul.events li {
+  padding: 5px;
+  margin: 5px;
+  border: 1px solid #000;
+  background: #efefef;
+  width: 200px;
+}
+
+ul.events li {
+  font-weight: bold;
+  font-size: 16pt;
+}

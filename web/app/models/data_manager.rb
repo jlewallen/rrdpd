@@ -50,6 +50,9 @@ class Statistics
     if !@events.has_key?(dod.name) then
       @events[dod.name] = Event.new(dod.name)
     end
+    if !@sources[dod.source].has_event(@events[dod.name]) then
+      @sources[dod.source].add_event(@events[dod.name])
+    end
   end
 
   def events
@@ -68,6 +71,13 @@ class DataManager
 
 	def DataManager.find_sources
 		get_statistics.sources
+	end
+
+	def DataManager.find_source(name)
+		find_sources.each do |source|
+      return source if source.name == name
+    end
+    raise "No such source: " + name
 	end
 
   private

@@ -1,3 +1,11 @@
 <p>
 You're in index of the Sources controller.
 </p>
+
+<ul class="events">
+  <% @source.events.each do |event| %>
+    <li>
+    <%= event.name %>
+    </li>
+  <% end %>
+</ul>
