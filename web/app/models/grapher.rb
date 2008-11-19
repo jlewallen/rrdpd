@@ -1,19 +1,31 @@
+class GraphImage
+  def initialize(data)
+    @data = data
+  end
+
+  def to_png
+    @data
+  end
+end
+
 class Grapher
-	def graph(database, destiny)
+	def graph(database)
 		parts = []
 		parts << "/usr/bin/rrdtool graph"
-		parts << destiny
+		parts << "-"
 		parts << "-w 600"
 		parts << "-h 250"
 		parts << "--start -3hours"
 		parts << "--end now"
-		parts << "--title \"#{database.unique_name}\""
+		parts << "--title \"#{database.title}\""
 		get_parts(database).each do |p|
 			parts << p
 		end
 		joined = parts.map { |p| p.to_s }.join(" ")
-		p joined
-		system(joined)
+		IO.popen(joined) do |f|
+      return GraphImage.new(f.read)
+    end
+    null
 	end
 
 	def get_parts(database)
