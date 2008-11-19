@@ -1,9 +1,12 @@
 class Source
   attr_reader :name
-  attr_reader :events
 
   def id
     @name
+  end
+
+  def events
+    @by_name.values
   end
 
   def display_name
@@ -12,19 +15,11 @@ class Source
 
   def initialize(name)
     @name = name
-    @events = []
+    @by_name = {}
   end
 
-  def has_event(event)
-    @events.each do |iter|
-      if iter.name == event.name then
-        return true
-      end
-    end
-    false
-  end
-
-  def add_event(event)
-    @events << event
+  def add(event)
+    return if @by_name.has_key?(event.name)
+    @by_name[event.name] = event
   end
 end

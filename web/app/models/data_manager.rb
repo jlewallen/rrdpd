@@ -50,9 +50,7 @@ class Statistics
     if !@events.has_key?(dod.name) then
       @events[dod.name] = Event.new(dod.name)
     end
-    if !@sources[dod.source].has_event(@events[dod.name]) then
-      @sources[dod.source].add_event(@events[dod.name])
-    end
+    @sources[dod.source].add(@events[dod.name])
   end
 
   def events
