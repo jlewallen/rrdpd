@@ -6,13 +6,13 @@ require 'writers/yesno.rb'
 require 'writers/quartiles.rb'
 
 class Configuration
-  attr_reader :seconds_per_slice
+  attr_reader :slice_interval
   attr_reader :write_interval
   attr_reader :data
 
-  def initialize(data, seconds_per_slice, write_interval)
+  def initialize(data, slice_interval, write_interval)
     @data = data
-    @seconds_per_slice = seconds_per_slice
+    @slice_interval = slice_interval
     @write_interval = write_interval
   end
 
@@ -105,13 +105,13 @@ class Slices
   end
 
   def get_slice_number
-    (Time.now.to_i / @cfg.seconds_per_slice).floor
+    (Time.now.to_i / @cfg.slice_interval).floor
   end
 
   def get_slice
     number = get_slice_number
     if !@slices.has_key?(number) then
-      @slices[number] = Slice.new(number * @cfg.seconds_per_slice)
+      @slices[number] = Slice.new(number * @cfg.slice_interval)
     end
     @slices[number]
   end
