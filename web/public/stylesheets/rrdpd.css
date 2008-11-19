@@ -29,3 +29,13 @@ ul.events li {
   font-weight: bold;
   font-size: 16pt;
 }
+
+ul.top_navigation {
+  margin: 5px;
+  border-bottom: 1px solid black;
+}
+
+ul.top_navigation li {
+  font-weight: bold;
+  font-size: 12pt;
+}
