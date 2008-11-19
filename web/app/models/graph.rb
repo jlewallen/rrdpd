@@ -1,8 +1,4 @@
 class Graph
-  include DataMapper::Resource
-  
-  property :id, Serial
-
-  property :url, String
-
+  attr_accessor :id
+  attr_accessor :url
 end

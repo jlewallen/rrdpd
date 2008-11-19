@@ -1,7 +1,5 @@
 class Database
-  include DataMapper::Resource
-  
-  property :id, Serial
-  property :url, String
-  property :path, String
+  attr_accessor :id
+  attr_accessor :url
+  attr_accessor :path
 end
