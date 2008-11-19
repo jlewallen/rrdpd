@@ -1,3 +1,31 @@
+/* ----------------------------------------------------------------------------
+ * General
+ */
+ul {
+  list-style-type: none;
+}
+
+/* ----------------------------------------------------------------------------
+ * Clearfix
+ */
+.clearfix { display: inline-block; }
+
+.clearfix:after {
+  content: " ";
+  display: block;
+  height: 0;
+  clear: both;
+  font-size: 0;
+  visibility: hidden;
+}
+
+* html .clearfix { height: 1%; }
+.clearfix { display: block; }
+
+/* ----------------------------------------------------------------------------
+ * Sources
+ */
+
 ul.sources {
 }
 
@@ -14,7 +42,12 @@ ul.sources li {
   font-size: 16pt;
 }
 
+/* ----------------------------------------------------------------------------
+ * Events
+ */
+
 ul.events {
+  float: right;
 }
 
 ul.events li {
@@ -25,17 +58,53 @@ ul.events li {
   width: 200px;
 }
 
-ul.events li {
+ul.events li p.name {
+  padding-left: 0px;
   font-weight: bold;
   font-size: 16pt;
 }
 
+/* ----------------------------------------------------------------------------
+ * Top Navigation
+ */
+
 ul.top_navigation {
-  margin: 5px;
+  padding: 5px;
   border-bottom: 1px solid black;
 }
 
 ul.top_navigation li {
   font-weight: bold;
   font-size: 12pt;
+}
+
+/* ----------------------------------------------------------------------------
+ * Canvas
+ */
+#canvas {
+  padding: 5px;
+}
+
+#canvas img {
+  margin-bottom: 5px;
+}
+
+a.renders {
+  font-size: 10pt;
+}
+
+a.renders.visible {
+  font-weight: bold;
+}
+
+/* ----------------------------------------------------------------------------
+ * Header/Footer
+ */
+#header {
+}
+
+#footer {
+  border-top: 1px solid #afafaf;
+  font-size: 9pt;
+  color: #afafaf;
 }

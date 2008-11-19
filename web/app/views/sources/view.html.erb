@@ -5,7 +5,39 @@ You're in index of the Sources controller.
 <ul class="events">
   <% @source.events.each do |event| %>
     <li>
-    <%= event.display_name %>
+      <p class="name">
+        <%= event.display_name %>
+      </p>
+      <a class='renders' href="<%= url(:render, :source => @source.name, :event => event.name, :grapher => :yesno) %>">YesNo</a>
+      <a class='renders' href="<%= url(:render, :source => @source.name, :event => event.name, :grapher => :quartiles) %>">Quartiles</a>
     </li>
   <% end %>
 </ul>
+
+<div id="canvas"></div>
+
+<script type="text/javascript">
+$(function() {
+  var global = this;
+
+  global.initialize = function() {
+    var self = this;
+    $('.renders').click(function(target) {
+      $(this).toggleClass('visible');
+      self.render();
+      return false;
+    });
+  };
+
+  global.render = function() {
+    var canvas = $('#canvas');
+    canvas.empty();
+    $('.renders.visible').each(function(i, target) {
+      canvas.append("<h2>" + target.href + "</h2>");
+      canvas.append("<img src='" + target.href + "' />");
+    });
+  };
+
+  global.initialize();
+});
+</script>

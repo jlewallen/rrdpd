@@ -5,12 +5,20 @@
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <link rel="stylesheet" href="/stylesheets/master.css" type="text/css" media="screen" charset="utf-8" />
     <link rel="stylesheet" href="/stylesheets/rrdpd.css" type="text/css" media="screen" charset="utf-8" />
+    <script type="text/javascript" src="/javascripts/jquery.js"></script> 
   </head>
   <body>
     <ul class="top_navigation">
       <li><a href="/">Home</a></li>
     </ul>
-    <%#= message[:notice] %>
-    <%= catch_content :for_layout %>
+   
+    <div id="view" class="clearfix">
+      <%#= message[:notice] %>
+      <%= catch_content :for_layout %>
+    </div>
+
+    <p id="footer">
+    Copyright 2008 Jacob Lewallen
+    </p>
   </body>
 </html>
