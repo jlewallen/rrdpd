@@ -101,7 +101,7 @@ class Slices
       end
       closing
     end
-    closed
+    closed.sort! { |a, b| a.time <=> b.time }
   end
 
   def get_slice_number
@@ -118,6 +118,8 @@ class Slices
 end
 
 class Slice
+  attr_reader :time
+
   def initialize(time)
     @time = time
     @sets = { }
