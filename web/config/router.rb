@@ -40,7 +40,7 @@ Merb::Router.prepare do
   # routes, you may want to comment/remove this line to prevent
   # clients from calling your create or destroy actions with a GET
   match('/source/:name', :name => /[^\/,;?]+/).to(:controller => 'sources', :action => 'view').name(:source)
-  match('/render/:source/:event/:grapher', :source => /[^\/,;?]+/).to(:controller => 'render', :action => 'graph').name(:render)
+  match('/render/:source/:event/:grapher/:start_at/:end_at', :source => /[^\/,;?]+/).to(:controller => 'render', :action => 'graph').name(:render)
   match('/').to(:controller => 'welcome', :action => 'index')
 
   default_routes

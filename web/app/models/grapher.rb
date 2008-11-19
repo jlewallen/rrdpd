@@ -9,14 +9,14 @@ class GraphImage
 end
 
 class Grapher
-	def graph(database)
+	def graph(database, start_at, end_at)
 		parts = []
 		parts << "/usr/bin/rrdtool graph"
 		parts << "-"
 		parts << "-w 600"
 		parts << "-h 250"
-		parts << "--start -3hours"
-		parts << "--end now"
+		parts << "--start -" + start_at
+		parts << "--end " + end_at
 		parts << "--title \"#{database.title}\""
 		get_parts(database).each do |p|
 			parts << p

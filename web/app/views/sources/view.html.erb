@@ -8,8 +8,8 @@ You're in index of the Sources controller.
       <p class="name">
         <%= event.display_name %>
       </p>
-      <a class='renders' href="<%= url(:render, :source => @source.name, :event => event.name, :grapher => :yesno) %>">YesNo</a>
-      <a class='renders' href="<%= url(:render, :source => @source.name, :event => event.name, :grapher => :quartiles) %>">Quartiles</a>
+      <a class='renders' href="<%= url(:render, :source => @source.name, :event => event.name, :grapher => :yesno, :start_at => '1day', :end_at => 'now') %>">YesNo</a>
+      <a class='renders' href="<%= url(:render, :source => @source.name, :event => event.name, :grapher => :quartiles, :start_at => '1day', :end_at => 'now') %>">Quartiles</a>
     </li>
   <% end %>
 </ul>
