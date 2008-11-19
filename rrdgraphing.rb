@@ -3,7 +3,7 @@
 require 'pathname'
 require 'rrdpd'
 
-class Database
+class DatabaseOnDisk
   attr_reader :type
   attr_reader :source
   attr_reader :name
@@ -34,7 +34,7 @@ class Finder
     Dir[@cfg.data.join("*.rrd")].each do |file|
       path = Pathname.new(file)
       if path.basename.to_s =~ /^(.+)-(.+)-(.+)\.rrd$/ then
-        yield Database.new($3.to_sym, $1, $2, path)
+        yield DatabaseOnDisk.new($3.to_sym, $1, $2, path)
       end
     end
   end
