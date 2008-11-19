@@ -6,6 +6,10 @@ class Source
     @name
   end
 
+  def display_name
+    name.capitalize
+  end
+
   def initialize(name)
     @name = name
     @events = []

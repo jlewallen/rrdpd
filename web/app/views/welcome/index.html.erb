@@ -5,7 +5,7 @@ You're in index of the Welcome controller.
 <ul class="sources">
   <% @sources.each do |source| %>
     <li>
-    <a href="<%= url(:source, source.id) %>"><%= source.name %></a>
+    <a href="<%= url(:source, source.id) %>"><%= source.display_name %></a>
     </li>
   <% end %>
 </ul>
