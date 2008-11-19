@@ -1,5 +1,11 @@
 <p>
 You're in index of the Welcome controller.
-  <%= 2343 %>
-  <%= @databases %>
 </p>
+
+<ul>
+  <% @databases.each do |database| %>
+    <li>
+    <%= database.name %>
+    </li>
+  <% end %>
+</ul>
