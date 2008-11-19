@@ -1,8 +1,8 @@
 class Welcome < Application
 
-  # ...and remember, everything returned from an action
-  # goes to the client...
   def index
+    @databases = DatabaseDataManager.find_all
+    display @databases
     render
   end
   
