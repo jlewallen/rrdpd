@@ -131,9 +131,15 @@ class Slice
   end
 
   def rollup(writers)
+    Configuration.log.info(to_s)
     @sets.each do |key, value|
       value.rollup(writers)
     end
+  end
+
+  def to_s
+    summaries = @sets.values.map { |v| v.to_s }
+    @time.to_s + ": " + summaries.sort.join(" ")
   end
   
   private
@@ -159,8 +165,12 @@ class SampleSet
   def rollup(writers)
     writers.each do |writer|
       writer.rollup(@time, @key.to_s, @values)
-      Configuration.log.info(writer.class.name + " " + @key.to_s + " processed " + @values.length.to_s + " samples")
+      Configuration.log.debug(writer.class.name + " " + @key.to_s + " processed " + @values.length.to_s + " samples")
     end
+  end
+
+  def to_s
+    @key.to_s
   end
 end
 
