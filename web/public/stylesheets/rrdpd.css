@@ -5,6 +5,10 @@ ul {
   list-style-type: none;
 }
 
+h1 {
+  padding: 5px;
+}
+
 /* ----------------------------------------------------------------------------
  * Clearfix
  */
@@ -83,6 +87,10 @@ ul.top_navigation li {
  */
 #canvas {
   padding: 5px;
+}
+
+#canvas h2 {
+  text-transform: uppercase;
 }
 
 #canvas img {

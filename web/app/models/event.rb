@@ -1,5 +1,6 @@
 class Event
   attr_reader :name
+  attr_reader :sources
   attr_reader :databases
 
   def id
@@ -13,6 +14,7 @@ class Event
   def initialize(name)
     @name = name
     @databases = []
+    @sources = []
   end
 
   def database(source, grapher)
@@ -21,6 +23,10 @@ class Event
         return dod
       end
     end
+  end
+
+  def add_source(source)
+    @sources << source
   end
 
   def add(dod)

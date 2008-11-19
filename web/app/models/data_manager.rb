@@ -52,6 +52,7 @@ class Statistics
     end
     @sources[dod.source].add(@events[dod.name])
     @events[dod.name].add(dod)
+    @events[dod.name].add_source(@sources[dod.source])
   end
 
   def events

@@ -1,6 +1,4 @@
-<p>
-You're in index of the Sources controller.
-</p>
+<h1>Source: <%= @source.display_name %></h1>
 
 <ul class="events">
   <% @source.events.each do |event| %>
@@ -50,7 +48,7 @@ $(function() {
 
   global.renderGraph = function(target) {
     var holder = $('<div></div>');
-    holder.append("<h1>" + target.title + "</h1>");
+    holder.append("<h2>" + target.title + "</h2>");
     holder.append("<img src='" + target.href + "' />");
     return holder;
   };
