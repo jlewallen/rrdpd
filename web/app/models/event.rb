@@ -1,5 +1,6 @@
 class Event
   attr_reader :name
+  attr_reader :databases
 
   def id
     @name
@@ -11,5 +12,18 @@ class Event
 
   def initialize(name)
     @name = name
+    @databases = []
+  end
+
+  def database(source, grapher)
+    @databases.each do |dod|
+      if dod.type == grapher and dod.source == source then
+        return dod
+      end
+    end
+  end
+
+  def add(dod)
+    @databases << dod
   end
 end

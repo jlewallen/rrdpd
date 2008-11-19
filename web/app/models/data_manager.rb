@@ -51,6 +51,7 @@ class Statistics
       @events[dod.name] = Event.new(dod.name)
     end
     @sources[dod.source].add(@events[dod.name])
+    @events[dod.name].add(dod)
   end
 
   def events
@@ -77,6 +78,15 @@ class DataManager
     end
     raise "No such source: " + name
 	end
+
+  def DataManager.find(event_name)
+    get_statistics.events.each do |event|
+      if event.name == event_name then
+        return event
+      end
+    end
+    raise "No such event"
+  end
 
   private
   def DataManager.get_statistics
