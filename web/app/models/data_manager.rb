@@ -66,8 +66,8 @@ class DataManager
 		@@cfg = value
 	end
 
-	def DataManager.find_all
-		get_statistics.events
+	def DataManager.find_sources
+		get_statistics.sources
 	end
 
   private

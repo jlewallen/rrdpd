@@ -1,8 +1,8 @@
 class Welcome < Application
 
   def index
-    @databases = DataManager.find_all
-    display @databases
+    @sources = DataManager.find_sources
+    display @sources
     render
   end
   

@@ -2,10 +2,10 @@
 You're in index of the Welcome controller.
 </p>
 
-<ul>
-  <% @databases.each do |database| %>
+<ul class="sources">
+  <% @sources.each do |source| %>
     <li>
-    <%= database.inspect %>
+    <a href="<%= url(:source, source.id) %>"><%= source.name %></a>
     </li>
   <% end %>
 </ul>
