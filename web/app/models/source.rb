@@ -1,4 +1,4 @@
-class Area
+class Source
   attr_reader :name
 
   def initialize(name)
