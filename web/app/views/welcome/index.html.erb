@@ -5,7 +5,7 @@ You're in index of the Welcome controller.
 <ul>
   <% @databases.each do |database| %>
     <li>
-    <%= database.name %>
+    <%= database.inspect %>
     </li>
   <% end %>
 </ul>

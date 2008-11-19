@@ -1,7 +1,7 @@
 class Welcome < Application
 
   def index
-    @databases = DatabaseDataManager.find_all
+    @databases = DataManager.find_all
     display @databases
     render
   end

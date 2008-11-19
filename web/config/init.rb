@@ -19,5 +19,5 @@ Merb::BootLoader.before_app_loads do
 end
  
 Merb::BootLoader.after_app_loads do
-  DatabaseDataManager.cfg = Configuration.new(Pathname.new("/dev/shm/rrdpd-data"))
+  DataManager.cfg = Configuration.new(Pathname.new("/dev/shm/rrdpd-data"))
 end

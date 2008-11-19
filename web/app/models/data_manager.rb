@@ -30,24 +30,53 @@ class Finder
 	def databases(&blk)
 		Dir[@cfg.data.join("*.rrd")].each do |file|
 			path = Pathname.new(file)
-			if path.basename.to_s =~ /^(.+)-(.+)-(.+)\.rrd$/ then
+			if path.basename.to_s =~ /^([^-]+)-(.+)-([^-]+)\.rrd$/ then
 				yield DatabaseOnDisk.new($3.to_sym, $1, $2, path)
 			end
 		end
 	end
 end
 
-class DatabaseDataManager
-	def DatabaseDataManager.cfg=(value)
+class Statistics
+  def initialize
+    @sources = {}
+    @events = {}
+  end
+
+  def add(dod)
+    if !@sources.has_key?(dod.source) then
+      @sources[dod.source] = Source.new(dod.source)
+    end
+    if !@events.has_key?(dod.name) then
+      @events[dod.name] = Event.new(dod.name)
+    end
+  end
+
+  def events
+    @events.values
+  end
+
+  def sources
+    @sources.values
+  end
+end
+
+class DataManager
+	def DataManager.cfg=(value)
 		@@cfg = value
 	end
 
-	def DatabaseDataManager.find_all
-		databases = []
+	def DataManager.find_all
+		get_statistics.events
+	end
+
+  private
+  def DataManager.get_statistics
+    statistics = Statistics.new
 		finder = Finder.new(@@cfg)
 		finder.databases do |dod|
-			databases << dod
+      statistics.add(dod)
 		end
-		databases
-	end
+    statistics
+  end
 end
