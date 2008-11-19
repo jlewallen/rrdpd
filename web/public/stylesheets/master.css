@@ -81,18 +81,15 @@ h3 {
 }
 p {
   color: #000;
-  background-color: #fff;
   line-height: 20px;
   padding: 5px;
 }
 a {
   color: #4d9b12;
-  background-color: #fff;
   text-decoration: none;
 }
 a:hover {
   color: #4d9b12;
-  background-color: #fff;
   text-decoration: underline;
 }
 #footer-container {
