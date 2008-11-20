@@ -144,17 +144,6 @@ class DataManager
 		@@cfg = value
 	end
 
-	def self.find_sources
-		get_statistics.sources
-	end
-
-	def self.find_source(name)
-		find_sources.each do |source|
-      return source if source.name == name
-    end
-    raise "No such source: " + name
-	end
-
   def self.find(source_name, event_name, grapher)
     foreach_dod do |dod|
       next if dod.source != source_name
