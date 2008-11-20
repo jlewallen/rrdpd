@@ -1,4 +1,4 @@
-class GraphImage
+class ImageData
   def initialize(data)
     @data = data
   end
@@ -23,7 +23,7 @@ class Grapher
 		end
 		joined = parts.map { |p| p.to_s }.join(" ")
 		IO.popen(joined) do |f|
-      return GraphImage.new(f.read)
+      return ImageData.new(f.read)
     end
     null
 	end

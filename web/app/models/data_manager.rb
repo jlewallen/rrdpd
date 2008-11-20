@@ -113,21 +113,25 @@ class DataManager
 		@@cfg = value
 	end
 
-  def self.find(source_name, event_name, grapher)
+	def self.cfg
+		@@cfg
+	end
+
+  def self.find(source_name, name, grapher)
     foreach_dod do |dod|
       next if dod.source != source_name
-      next if dod.name != event_name
+      next if dod.name != name
       next if dod.grapher != grapher
       return dod
     end
-    raise "No such database"
+    raise "No such database: #{source_name} #{name} #{grapher}"
   end
 
   def self.find_categorized
     by_category = {}
 
-    foreach_dod do |dod|
-      category = (by_category['ALL'] ||= {})
+    foreach_dod_by_category do |cname, dod|
+      category = (by_category[cname] ||= {})
       sources = (category[dod.name] ||= {})
       dtypes = (sources[dod.source] ||= [])
       dtypes << DatabaseType.new(dod)
@@ -148,26 +152,20 @@ class DataManager
   end
 
   private
-  def self.dods_by_category
-    @dods_by_category = {}
-    @dods_by_category['ALL'] = []
-    @@cfg.categories.each do |category_def|
-      @dods_by_category[category_def.name] = []
-    end
+  def self.foreach_dod_by_category(&blk)
     foreach_dod do |dod|
       category = 'ALL'
-      @@cfg.categories.each do |cdef|
+      cfg.categories.each do |cdef|
         if cdef.re.match(dod.name)  then
           category = cdef.name
         end
       end
-      @dods_by_category[category] << dod
+      yield category, dod
     end
-    @dods_by_category
   end
 
   def self.foreach_dod(&blk)
-		finder = Finder.new(@@cfg)
+		finder = Finder.new(cfg)
 		finder.databases do |dod|
       yield dod
     end
