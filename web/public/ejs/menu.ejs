@@ -1,0 +1,20 @@
+<%
+jQuery.each(model, function(i, category) {
+  jQuery.each(category.events, function(j, ev) {
+%>
+  <li>
+    <p class="name"><%= ev.name %></p>
+      <%
+      jQuery.each(ev.sources, function(k, source) {
+        jQuery.each(source.types, function(l, type) {
+      %>
+      <a class="renders" href="<%= type.url %>" title="<%= type.title %>"><%= type.grapher %></a>
+      <%
+        });
+      });
+      %>
+  </li>
+<%
+  });
+});
+%>
