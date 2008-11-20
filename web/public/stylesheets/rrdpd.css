@@ -27,14 +27,14 @@ h1 {
 .clearfix { display: block; }
 
 /* ----------------------------------------------------------------------------
- * Events
+ * Menu
  */
 
-ul.events {
+#menu {
   float: right;
 }
 
-ul.events li {
+#menu li {
   padding: 5px;
   margin: 5px;
   border: 1px solid #afafaf;
@@ -42,7 +42,7 @@ ul.events li {
   width: 200px;
 }
 
-ul.events li p.name {
+#menu li p.name {
   padding-left: 0px;
   font-weight: bold;
   font-size: 16pt;

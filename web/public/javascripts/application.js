@@ -21,7 +21,7 @@ $(function() {
     },
 
     render: function(data) {
-      var container = $('ul.events');
+      var container = $('#menu');
       jQuery.each(data, function(i, category) {
         jQuery.each(category.events, function(j, ev) {
           var panel = $('<li></li>');
