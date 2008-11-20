@@ -108,13 +108,15 @@ class DatabaseType
     @grapher = dod.grapher
     @title = dod.unique_name
     @uri = dod.uri
+    @dod = dod
   end
 
   def to_json
     {
       :grapher => @grapher,
       :title => @title,
-      :url => @uri
+      :url => @uri,
+      :timespans => Timespan.create(@dod)
     }.to_json
   end
 end
@@ -130,12 +132,35 @@ class Timespan
 
   def self.create(dod)
     [
-      Timespan.new('4weeks', 'now'),
-      Timespan.new('1weeks', 'now'),
-      Timespan.new('3days', 'now'),
-      Timespan.new('1days', 'now'),
-      Timespan.new('6hours', 'now')
+      Timespan.new('4weeks', dod.uri('4weeks', 'now')),
+      Timespan.new('1weeks', dod.uri('1weeks', 'now')),
+      Timespan.new('3days', dod.uri('3days', 'now')),
+      Timespan.new('1day', dod.uri('1day', 'now')),
+      Timespan.new('6hours', dod.uri('6hours', 'now'))
     ]
+  end
+
+  def to_json
+    {
+      :name => name,
+      :uri => uri
+    }.to_json
+  end
+end
+
+class Graphable
+  def initialize(name, title, uri)
+    @name = name
+    @title = title
+    @uri = uri
+  end
+
+  def to_json
+    {
+      :name => @name,
+      :title => @title,
+      :uri => @uri
+    }.to_json
   end
 end
 
