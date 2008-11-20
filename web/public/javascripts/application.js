@@ -57,7 +57,7 @@ $(function() {
     initialize: function() {
       this._super("/ejs/menu");
       this._map = {};
-      this.queryAndShow("/events/categorized", "#menu");
+      this.queryAndShow("/query/categorized", "#menu");
     },
 
     registerActions: function() {

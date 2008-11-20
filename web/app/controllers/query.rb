@@ -1,4 +1,4 @@
-class Events < Application
+class Query < Application
 
   provides :json, :html
 
