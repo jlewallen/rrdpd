@@ -86,4 +86,11 @@ $(function() {
     }
   });
 
+  global.Urls = {};
+
+  global.Urls.ForGraph = function(graph, starting, ending, w, h) {
+    return "/render/" + graph.source + "/" + graph.name + "/" + graph.grapher
+     + "/" + starting + "/" + ending + "/" + w + "/" + h;
+  };
+
 });
