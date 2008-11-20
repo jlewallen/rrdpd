@@ -1,7 +1,6 @@
-<%
-jQuery.each(model, function(i, category) {
-  jQuery.each(category.events, function(j, ev) {
-%>
+<% jQuery.each(model, function(i, category) { %>
+  <h2><%= category.name %></h2>
+  <% jQuery.each(category.events, function(j, ev) { %>
   <li>
     <p class="name"><%= ev.name %></p>
       <%

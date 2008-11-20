@@ -26,8 +26,8 @@ class DatabaseOnDisk
 		@path.basename('.rrd').to_s
 	end
 
-  def uri
-    Merb::Router.url(:render, :source => @source, :event => @name, :grapher => @grapher, :start_at => '1days', :end_at => 'now')
+  def uri(starting='1days', ending='now')
+    Merb::Router.url(:render, :source => @source, :event => @name, :grapher => @grapher, :starting => starting, :ending => ending)
   end
 end
 
@@ -63,23 +63,6 @@ class Category
   end
 end
 
-class CategorizedSource
-  attr_reader :name
-  attr_reader :types
-
-  def initialize(name, types)
-    @name = name
-    @types = types
-  end
-
-  def to_json
-    { 
-      :name => @name,
-      :types => @types
-    }.to_json
-  end
-end
-
 class CategorizedEvent
   attr_reader :name
   attr_reader :title
@@ -95,6 +78,23 @@ class CategorizedEvent
     { 
       :name => @name,
       :sources => @sources
+    }.to_json
+  end
+end
+
+class CategorizedSource
+  attr_reader :name
+  attr_reader :types
+
+  def initialize(name, types)
+    @name = name
+    @types = types
+  end
+
+  def to_json
+    { 
+      :name => @name,
+      :types => @types
     }.to_json
   end
 end
@@ -116,6 +116,26 @@ class DatabaseType
       :title => @title,
       :url => @uri
     }.to_json
+  end
+end
+
+class Timespan
+  attr_reader :name
+  attr_reader :uri
+
+  def initialize(name, uri)
+    @name = name
+    @uri = uri
+  end
+
+  def self.create(dod)
+    [
+      Timespan.new('4weeks', 'now'),
+      Timespan.new('1weeks', 'now'),
+      Timespan.new('3days', 'now'),
+      Timespan.new('1days', 'now'),
+      Timespan.new('6hours', 'now')
+    ]
   end
 end
 
@@ -148,7 +168,7 @@ class DataManager
       dtypes << DatabaseType.new(dod)
     end
 
-    by_category.map do |cname, v|
+    categories = by_category.map do |cname, v|
       evs = v.map do |ename, v|
         srcs = v.map do |sname, v|
           types = v.map do |dod|
@@ -158,6 +178,7 @@ class DataManager
         end
         CategorizedEvent.new(ename, ename, srcs)
       end
+      evs.sort! { |a, b| a.name <=> b.name }
       Category.new(cname, evs)
     end
   end

@@ -56,6 +56,13 @@ h1 {
   text-transform: uppercase;
 }
 
+#menu h2 {
+  padding-left: 5px;
+  margin: 0px;
+  font-weight: bold;
+  color: #afafaf;
+}
+
 /* ----------------------------------------------------------------------------
  * Canvas
  */
@@ -65,6 +72,7 @@ h1 {
 
 #canvas h2 {
   text-transform: uppercase;
+  color: #afafaf;
 }
 
 #canvas img {
