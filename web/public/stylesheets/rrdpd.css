@@ -44,8 +44,16 @@ h1 {
 
 #menu li p.name {
   padding-left: 0px;
+  font-family: Verdana,Arial,sans-serif;
+  font-size: 1.2em;
+  font-size-adjust: none;
+  font-stretch: normal;
+  font-style: normal;
+  font-variant: normal;
   font-weight: bold;
-  font-size: 16pt;
+  letter-spacing: 2px;
+  line-height: normal;
+  text-transform: uppercase;
 }
 
 /* ----------------------------------------------------------------------------

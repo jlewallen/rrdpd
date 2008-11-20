@@ -1,25 +1,34 @@
 require 'pathname'
 
 class DatabaseOnDisk
-	attr_reader :grapher
-	attr_reader :source
-	attr_reader :name
 	attr_reader :path
-
-  def uri
-    Merb::Router.url(:render, :source => @source, :event => @name, :grapher => @grapher, :start_at => '1days', :end_at => 'now')
-  end
+	attr_reader :source
+	attr_reader :grapher
+	attr_reader :name
 
 	def initialize(grapher, source, name, path)
 		@grapher = grapher
 		@source = source
 		@name = name
 		@path = path
+    @display_name = name
 	end
 
+  def display_name=(value)
+    @display_name = value
+  end
+
+  def display_name
+    @display_name
+  end
+
 	def unique_name
-		@path.basename(".rrd").to_s
+		@path.basename('.rrd').to_s
 	end
+
+  def uri
+    Merb::Router.url(:render, :source => @source, :event => @name, :grapher => @grapher, :start_at => '1days', :end_at => 'now')
+  end
 end
 
 class Finder
@@ -73,10 +82,12 @@ end
 
 class CategorizedEvent
   attr_reader :name
+  attr_reader :title
   attr_reader :sources
 
-  def initialize(name, sources)
+  def initialize(name, title, sources)
     @name = name
+    @title = title
     @sources = sources
   end
 
@@ -95,7 +106,7 @@ class DatabaseType
 
   def initialize(dod)
     @grapher = dod.grapher
-    @title = ''
+    @title = dod.unique_name
     @uri = dod.uri
   end
 
@@ -124,7 +135,7 @@ class DataManager
       next if dod.grapher != grapher
       return dod
     end
-    raise "No such database: #{source_name} #{name} #{grapher}"
+    raise "Database Not Found: #{source_name} #{name} #{grapher}"
   end
 
   def self.find_categorized
@@ -132,7 +143,7 @@ class DataManager
 
     foreach_dod_by_category do |cname, dod|
       category = (by_category[cname] ||= {})
-      sources = (category[dod.name] ||= {})
+      sources = (category[dod.display_name] ||= {})
       dtypes = (sources[dod.source] ||= [])
       dtypes << DatabaseType.new(dod)
     end
@@ -145,7 +156,7 @@ class DataManager
           end
           CategorizedSource.new(sname, types)
         end
-        CategorizedEvent.new(ename, srcs)
+        CategorizedEvent.new(ename, ename, srcs)
       end
       Category.new(cname, evs)
     end
@@ -156,7 +167,8 @@ class DataManager
     foreach_dod do |dod|
       category = 'ALL'
       cfg.categories.each do |cdef|
-        if cdef.re.match(dod.name)  then
+        if new_name = cdef.transform(dod.name) then
+          dod.display_name = new_name
           category = cdef.name
         end
       end
