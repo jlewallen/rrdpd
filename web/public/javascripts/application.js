@@ -61,6 +61,17 @@ $(function() {
         $(this).toggleClass('visible');
         return false;
       });
+      $('a.clear_all_graphs').click(function() {
+        self.clearAllGraphs();
+      });
+    },
+
+    clearAllGraphs: function() {
+      $('.renders.visible').removeClass('visible');
+      jQuery.each(this._map, function(k, v) {
+        v.remove();
+      });
+      this._map = {}; 
     }
   });
 
