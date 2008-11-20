@@ -37,7 +37,7 @@ ul.events {
 ul.events li {
   padding: 5px;
   margin: 5px;
-  border: 1px solid #000;
+  border: 1px solid #afafaf;
   background: #efefef;
   width: 200px;
 }
@@ -96,7 +96,6 @@ a.renders.visible {
  */
 #footer {
   padding: 5px;
-  border-top: 2px solid #afafaf;
   font-size: 9pt;
   color: #afafaf;
 }
