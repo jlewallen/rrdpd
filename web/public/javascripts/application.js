@@ -4,6 +4,7 @@ $(function() {
   global.ApplicationController = Class.extend({
     initialize: function(templateName) {
       this._templateName = templateName;
+      this._top = null;
     },
 
     render: function(path, model) {
@@ -11,10 +12,25 @@ $(function() {
       return template.render({ model: model });
     },
 
-    show: function(id, model) {
-      var rendered = this.render("/ejs/menu", model);
-      $(id).append(rendered);
+    show: function(container, model) {
+      var rendered = this.render(this._templateName, model);
+      this._top = $(rendered);
+      $(container).append(this._top);
       this.registerActions();
+    },
+
+    queryAndShow: function(url, container) {
+      var self = this;
+      jQuery.getJSON(url, function(data) {
+        self.show(container, data);
+      });
+    },
+
+    remove: function() {
+      if (this._top != null) {
+        this._top.remove();
+        this._top = null;
+      }
     },
 
     registerActions: function() {
@@ -25,42 +41,38 @@ $(function() {
     initialize: function() {
       this._super("/ejs/menu");
       this._map = {};
-      this.query();
-    },
-
-    query: function() {
-      var self = this;
-      jQuery.getJSON("/events/categorized", function(data) {
-        self.show("#menu", data);
-      });
+      this.queryAndShow("/events/categorized", "#menu");
     },
 
     registerActions: function() {
       var self = this;
       $('.renders').click(function(target) {
-        if ($(this).hasClass('visible'))
+        if (!$(this).hasClass('visible'))
         {
-          self._map[this.title].remove();
-          delete self._map[this.title];
+          var graphController = new GraphController({});
+          graphController.show("#canvas", { title: this.title, url: this.href });
+          self._map[this.href] = graphController;
         }
         else
         {
-          var holder = self.renderGraph(this);
-          $('#canvas').append(holder);
-          self._map[this.title] = holder;
+          self._map[this.href].remove();
+          delete self._map[this.href];
         }
         $(this).toggleClass('visible');
         return false;
       });
+    }
+  });
+
+  global.GraphController = ApplicationController.extend({
+    initialize: function(model) {
+      this._super("/ejs/graph");
+      this.model = model;
     },
 
-    renderGraph: function(target) {
-      var holder = $('<div></div>');
-      holder.append("<h2>" + target.title + "</h2>");
-      holder.append("<img src='" + target.href + "' />");
-      return holder;
+    registerActions: function() {
+      var self = this;
     }
-
   });
 
 });
