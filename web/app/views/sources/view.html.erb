@@ -1,23 +1,6 @@
 <h1>Source: <%= @source.display_name %></h1>
 
 <ul class="events">
-  <% @source.events.each do |event| %>
-    <li>
-      <p class="name">
-        <%= event.display_name %>
-      </p>
-      <a class='renders'
-        title="<%= @source.name %>/<%= event.name %>/yesno"
-        href="<%= url(:render, :source => @source.name, :event => event.name, :grapher => :yesno, :start_at => '1day', :end_at => 'now') %>">
-        YesNo
-      </a>
-      <a class='renders'
-        title="<%= @source.name %>/<%= event.name %>/quartiles"
-        href="<%= url(:render, :source => @source.name, :event => event.name, :grapher => :quartiles, :start_at => '1day', :end_at => 'now') %>">
-        Quartiles
-      </a>
-    </li>
-  <% end %>
 </ul>
 
 <div id="canvas"></div>
@@ -26,9 +9,45 @@
 $(function() {
   var global = this;
 
-  global.initialize = function() {
+  global.initialize = function()
+  {
+    this.map = {};
+    this.query();
+  };
+
+  global.query = function()
+  {
     var self = this;
-    self.map = {};
+    jQuery.getJSON("/events/categorized", function(data) {
+      self.render(data);
+    });
+  };
+
+  global.render = function(data)
+  {
+    var container = $('ul.events');
+    jQuery.each(data, function(i, category) {
+      jQuery.each(category.events, function(j, ev) {
+        var panel = $('<li></li>');
+        panel.append('<p class="name">' + ev.name + '</p>');
+        jQuery.each(ev.sources, function(k, source) {
+          jQuery.each(source.types, function(l, type) {
+            var link = $("<a class='renders'>" + type.grapher + "</a>");
+            link.attr('href', type.url);
+            link.attr('title', type.title);
+            panel.append(link);
+          });
+        });
+        container.append(panel);
+      });
+    });
+    this.registerActions();
+  };
+
+  global.registerActions = function()
+  {
+    var self = this;
+    console.log($('.renders'));
     $('.renders').click(function(target) {
       if ($(this).hasClass('visible'))
       {
@@ -46,7 +65,8 @@ $(function() {
     });
   };
 
-  global.renderGraph = function(target) {
+  global.renderGraph = function(target)
+  {
     var holder = $('<div></div>');
     holder.append("<h2>" + target.title + "</h2>");
     holder.append("<img src='" + target.href + "' />");

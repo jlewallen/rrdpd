@@ -1,13 +1,17 @@
 require 'pathname'
 
 class DatabaseOnDisk
-	attr_reader :type
+	attr_reader :grapher
 	attr_reader :source
 	attr_reader :name
 	attr_reader :path
 
-	def initialize(type, source, name, path)
-		@type = type
+  def uri
+    Merb::Router.url(:render, :source => @source, :event => @name, :grapher => @grapher, :start_at => '1days', :end_at => 'now')
+  end
+
+	def initialize(grapher, source, name, path)
+		@grapher = grapher
 		@source = source
 		@name = name
 		@path = path
@@ -64,38 +68,158 @@ class Statistics
   end
 end
 
+class Category
+  attr_reader :name
+  attr_reader :events
+
+  def initialize(name, events)
+    @name = name
+    @events = events
+  end
+
+  def to_json
+    { 
+      :name => @name,
+      :events => @events
+    }.to_json
+  end
+end
+
+class CategorizedSource
+  attr_reader :name
+  attr_reader :types
+
+  def initialize(name, types)
+    @name = name
+    @types = types
+  end
+
+  def to_json
+    { 
+      :name => @name,
+      :types => @types
+    }.to_json
+  end
+end
+
+class CategorizedEvent
+  attr_reader :name
+  attr_reader :sources
+
+  def initialize(name, sources)
+    @name = name
+    @sources = sources
+  end
+
+  def to_json
+    { 
+      :name => @name,
+      :sources => @sources
+    }.to_json
+  end
+end
+
+class DatabaseType
+  attr_reader :grapher
+  attr_reader :title
+  attr_reader :uri
+
+  def initialize(dod)
+    @grapher = dod.grapher
+    @title = ''
+    @uri = dod.uri
+  end
+
+  def to_json
+    {
+      :grapher => @grapher,
+      :title => @title,
+      :url => @uri
+    }.to_json
+  end
+end
+
 class DataManager
-	def DataManager.cfg=(value)
+	def self.cfg=(value)
 		@@cfg = value
 	end
 
-	def DataManager.find_sources
+	def self.find_sources
 		get_statistics.sources
 	end
 
-	def DataManager.find_source(name)
+	def self.find_source(name)
 		find_sources.each do |source|
       return source if source.name == name
     end
     raise "No such source: " + name
 	end
 
-  def DataManager.find(event_name)
-    get_statistics.events.each do |event|
-      if event.name == event_name then
-        return event
-      end
+  def self.find(source_name, event_name, grapher)
+    foreach_dod do |dod|
+      next if dod.source != source_name
+      next if dod.name != event_name
+      next if dod.grapher != grapher
+      return dod
     end
-    raise "No such event"
+    raise "No such database"
+  end
+
+  def self.find_categorized
+    by_category = {}
+
+    foreach_dod do |dod|
+      category = (by_category['ALL'] ||= {})
+      sources = (category[dod.name] ||= {})
+      dtypes = (sources[dod.source] ||= [])
+      dtypes << DatabaseType.new(dod)
+    end
+
+    by_category.map do |cname, v|
+      evs = v.map do |ename, v|
+        srcs = v.map do |sname, v|
+          types = v.map do |dod|
+            dod
+          end
+          CategorizedSource.new(sname, types)
+        end
+        CategorizedEvent.new(ename, srcs)
+      end
+      Category.new(cname, evs)
+    end
   end
 
   private
-  def DataManager.get_statistics
+  def self.dods_by_category
+    @dods_by_category = {}
+    @dods_by_category['ALL'] = []
+    @@cfg.categories.each do |category_def|
+      @dods_by_category[category_def.name] = []
+    end
+    foreach_dod do |dod|
+      category = 'ALL'
+      @@cfg.categories.each do |cdef|
+        if cdef.re.match(dod.name)  then
+          category = cdef.name
+        end
+      end
+      @dods_by_category[category] << dod
+    end
+    @dods_by_category
+  end
+
+  def self.get_statistics
     statistics = Statistics.new
-		finder = Finder.new(@@cfg)
-		finder.databases do |dod|
+		foreach_dod do |dod|
       statistics.add(dod)
 		end
     statistics
+  end
+  
+  def self.foreach_dod(&blk)
+		finder = Finder.new(@@cfg)
+		finder.databases do |dod|
+      yield dod
+    end
   end
 end
