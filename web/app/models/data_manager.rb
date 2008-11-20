@@ -26,8 +26,8 @@ class DatabaseOnDisk
 		@path.basename('.rrd').to_s
 	end
 
-  def uri(starting='1days', ending='now')
-    Merb::Router.url(:render, :source => @source, :event => @name, :grapher => @grapher, :starting => starting, :ending => ending)
+  def uri(starting='1days', ending='now', w=600, h=200)
+    Merb::Router.url(:render, :source => @source, :event => @name, :grapher => @grapher, :starting => starting, :ending => ending, :w => w, :h => h)
   end
 end
 

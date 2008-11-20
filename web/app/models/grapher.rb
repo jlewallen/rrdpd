@@ -9,12 +9,12 @@ class ImageData
 end
 
 class Grapher
-	def graph(database, starting, ending)
+	def graph(database, starting, ending, w, h)
 		parts = []
 		parts << "/usr/bin/rrdtool graph"
 		parts << "-"
-		parts << "-w 600"
-		parts << "-h 250"
+		parts << "-w " + w
+		parts << "-h " + h
 		parts << "--start -" + starting
 		parts << "--end " + ending
 		parts << "--title \"#{database.title}\""

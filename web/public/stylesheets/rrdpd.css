@@ -63,6 +63,14 @@ h1 {
   color: #afafaf;
 }
 
+#menu a.renders {
+}
+
+#menu a.renders.visible {
+  font-weight: bold;
+  color: #c55;
+}
+
 /* ----------------------------------------------------------------------------
  * Canvas
  */
@@ -70,20 +78,29 @@ h1 {
   padding: 5px;
 }
 
-#canvas h2 {
+/* ----------------------------------------------------------------------------
+ * Graphs
+ */
+div.graphs {
+}
+
+div.graphs h2 {
   text-transform: uppercase;
   color: #afafaf;
 }
 
-#canvas img {
+div.graphs div.graph {
   margin-bottom: 5px;
 }
 
-a.renders {
+div.graphs ul {
 }
 
-a.renders.visible {
-  font-weight: bold;
+div.graphs ul li {
+  display: inline;
+}
+
+div.graphs ul li a {
 }
 
 /* ----------------------------------------------------------------------------
