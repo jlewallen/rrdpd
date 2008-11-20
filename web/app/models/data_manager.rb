@@ -27,7 +27,7 @@ class DatabaseOnDisk
 	end
 
   def uri(starting='1days', ending='now', w=600, h=200)
-    Merb::Router.url(:render, :source => @source, :event => @name, :grapher => @grapher, :starting => starting, :ending => ending, :w => w, :h => h)
+    Merb::Router.url(:render, :source => @source, :name => @name, :grapher => @grapher, :starting => starting, :ending => ending, :w => w, :h => h)
   end
 end
 
@@ -48,35 +48,53 @@ end
 
 class Category
   attr_reader :name
-  attr_reader :events
 
-  def initialize(name, events)
+  def initialize(name, items)
     @name = name
-    @events = events
+    @items = items
+  end
+
+  def graphs
+    @items.map do |ev|
+      ev.default_graph
+    end
   end
 
   def to_json
     { 
       :name => @name,
-      :events => @events
+      :graphs => graphs,
+      :items => @items
     }.to_json
   end
 end
 
-class CategorizedEvent
+class CategorizedItem
   attr_reader :name
-  attr_reader :title
-  attr_reader :sources
 
   def initialize(name, title, sources)
     @name = name
     @title = title
+    @description = ''
     @sources = sources
+  end
+
+  def default_graph
+    all_source.default_graph
+  end
+
+  def all_source
+    @sources.each do |source|
+      return source if source.name =~ /all/i
+    end
+    raise "All source is missing?"
   end
 
   def to_json
     { 
       :name => @name,
+      :description => @description,
+      :graph => default_graph,
       :sources => @sources
     }.to_json
   end
@@ -84,11 +102,14 @@ end
 
 class CategorizedSource
   attr_reader :name
-  attr_reader :types
 
   def initialize(name, types)
     @name = name
     @types = types
+  end
+
+  def default_graph
+    @types[0].default_graph
   end
 
   def to_json
@@ -101,8 +122,6 @@ end
 
 class DatabaseType
   attr_reader :grapher
-  attr_reader :title
-  attr_reader :uri
 
   def initialize(dod)
     @grapher = dod.grapher
@@ -111,26 +130,29 @@ class DatabaseType
     @dod = dod
   end
 
+  def default_graph
+    Graph.new(@dod.name, @dod.unique_name, @dod.uri)
+  end
+
   def to_json
     {
       :grapher => @grapher,
       :title => @title,
       :url => @uri,
-      :timespans => Timespan.create(@dod)
+      :timespans => Timespan.standard(@dod)
     }.to_json
   end
 end
 
 class Timespan
   attr_reader :name
-  attr_reader :uri
 
   def initialize(name, uri)
     @name = name
     @uri = uri
   end
 
-  def self.create(dod)
+  def self.standard(dod)
     [
       Timespan.new('4weeks', dod.uri('4weeks', 'now')),
       Timespan.new('1weeks', dod.uri('1weeks', 'now')),
@@ -142,24 +164,26 @@ class Timespan
 
   def to_json
     {
-      :name => name,
-      :uri => uri
+      :name => @name,
+      :uri => @uri
     }.to_json
   end
 end
 
-class Graphable
-  def initialize(name, title, uri)
+class Graph
+  def initialize(name, title, image_uri)
     @name = name
     @title = title
-    @uri = uri
+    @image_uri = image_uri
+    @related_graphs_uri = ''
   end
 
   def to_json
     {
       :name => @name,
       :title => @title,
-      :uri => @uri
+      :related_graphs_uri => @related_graphs_uri,
+      :image_uri => @image_uri
     }.to_json
   end
 end
@@ -172,6 +196,10 @@ class DataManager
 	def self.cfg
 		@@cfg
 	end
+
+  def self.find_item(name)
+    []
+  end
 
   def self.find(source_name, name, grapher)
     foreach_dod do |dod|
@@ -202,7 +230,7 @@ class DataManager
           types.sort! { |a, b| a.grapher.to_s <=> b.grapher.to_s }
           CategorizedSource.new(sname, types)
         end
-        CategorizedEvent.new(ename, ename, srcs)
+        CategorizedItem.new(ename, ename, srcs)
       end
       evs.sort! { |a, b| a.name <=> b.name }
       Category.new(cname, evs)

@@ -1,3 +1,19 @@
+jQuery.fn.extend({
+  property: function(value) {
+    var properties = [];
+    this.each(function(i, node) {
+      var attr = node.attributes["data-" + value];
+      if (attr) {
+        properties.unshift(attr.value);
+      }
+    });
+    if (properties.length == 1) {
+      return properties[0];
+    }
+    return properties;
+  }
+});
+
 $(function() {
   var global = window;
 
@@ -47,26 +63,33 @@ $(function() {
     registerActions: function() {
       var self = this;
       $('.renders').click(function(target) {
-        if (!$(this).hasClass('visible'))
-        {
-          var graphController = new GraphController({});
-          graphController.show("#canvas", { title: this.title, url: this.href });
-          self._map[this.href] = graphController;
-        }
-        else
-        {
-          self._map[this.href].remove();
-          delete self._map[this.href];
-        }
-        $(this).toggleClass('visible');
+        self._graphableSelected(this);
         return false;
       });
+      
       $('a.clear_all_graphs').click(function() {
-        self.clearAllGraphs();
+        self._clearAllGraphs();
+        return false;
       });
     },
 
-    clearAllGraphs: function() {
+    _graphableSelected: function(selected) {
+      var key = $(selected).property("key");
+      if (!$(selected).hasClass('visible'))
+      {
+        var graphController = new GraphController({});
+        graphController.show("#canvas", { title: selected.title, url: selected.href });
+        this._map[key] = graphController;
+      }
+      else
+      {
+        this._map[key].remove();
+        delete this._map[key];
+      }
+      $(selected).toggleClass('visible');
+    },
+
+    _clearAllGraphs: function() {
       $('.renders.visible').removeClass('visible');
       jQuery.each(this._map, function(k, v) {
         v.remove();

@@ -3,15 +3,18 @@
 </p>
 <% jQuery.each(model, function(i, category) { %>
   <h2><%= category.name %></h2>
-  <% jQuery.each(category.events, function(j, ev) { %>
-  <li>
-    <p class="name"><%= ev.name %></p>
+  <% jQuery.each(category.items, function(j, item) { %>
+  <li class="renders" data-key="<%= item.graph.image_uri %>">
+    <p class="name"><%= item.name %></p>
+    <% if (item.description.length > 0) { %>
+      <p class="description"><%= item.description %></p>
+    <% } %>
       <%
-      jQuery.each(ev.sources, function(k, source) {
+      jQuery.each(item.sources, function(k, source) {
         if (source.name == "all") {
         jQuery.each(source.types, function(l, type) {
       %>
-      <a class="renders" href="<%= type.url %>" title="<%= type.title %>"><%= type.grapher %></a>
+      <a class="renders" data-key="<%= type.url %>" href="<%= type.url %>" title="<%= type.title %>"><%= type.grapher %></a>
       <%
         });
         }
