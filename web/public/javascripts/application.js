@@ -9,7 +9,7 @@ $(function() {
   global.WelcomeController = ApplicationController.extend({
     initialize: function() {
       this._super();
-      this.map = {};
+      this._map = {};
       this.query();
     },
 
@@ -43,18 +43,17 @@ $(function() {
     registerActions: function()
     {
       var self = this;
-      console.log($('.renders'));
       $('.renders').click(function(target) {
         if ($(this).hasClass('visible'))
         {
-          self.map[this.title].remove();
-          delete self.map[this.title];
+          self._map[this.title].remove();
+          delete self._map[this.title];
         }
         else
         {
           var holder = self.renderGraph(this);
           $('#canvas').append(holder);
-          self.map[this.title] = holder;
+          self._map[this.title] = holder;
         }
         $(this).toggleClass('visible');
         return false;
