@@ -20,10 +20,6 @@ class DatabaseOnDisk
 	def unique_name
 		@path.basename(".rrd").to_s
 	end
-
-	def output_name
-		@path.parent.join(unique_name + ".png")
-	end
 end
 
 class Finder
@@ -39,33 +35,6 @@ class Finder
 			end
 		end
 	end
-end
-
-class Statistics
-  def initialize
-    @sources = {}
-    @events = {}
-  end
-
-  def add(dod)
-    if !@sources.has_key?(dod.source) then
-      @sources[dod.source] = Source.new(dod.source)
-    end
-    if !@events.has_key?(dod.name) then
-      @events[dod.name] = Event.new(dod.name)
-    end
-    @sources[dod.source].add(@events[dod.name])
-    @events[dod.name].add(dod)
-    @events[dod.name].add_source(@sources[dod.source])
-  end
-
-  def events
-    @events.values
-  end
-
-  def sources
-    @sources.values
-  end
 end
 
 class Category
@@ -197,14 +166,6 @@ class DataManager
     @dods_by_category
   end
 
-  def self.get_statistics
-    statistics = Statistics.new
-		foreach_dod do |dod|
-      statistics.add(dod)
-		end
-    statistics
-  end
-  
   def self.foreach_dod(&blk)
 		finder = Finder.new(@@cfg)
 		finder.databases do |dod|
