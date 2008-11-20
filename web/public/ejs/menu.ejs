@@ -5,11 +5,13 @@
     <p class="name"><%= ev.name %></p>
       <%
       jQuery.each(ev.sources, function(k, source) {
+        if (source.name == "all") {
         jQuery.each(source.types, function(l, type) {
       %>
       <a class="renders" href="<%= type.url %>" title="<%= type.title %>"><%= type.grapher %></a>
       <%
         });
+        }
       });
       %>
   </li>

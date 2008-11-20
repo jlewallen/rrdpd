@@ -174,6 +174,7 @@ class DataManager
           types = v.map do |dod|
             dod
           end
+          types.sort! { |a, b| a.grapher.to_s <=> b.grapher.to_s }
           CategorizedSource.new(sname, types)
         end
         CategorizedEvent.new(ename, ename, srcs)
