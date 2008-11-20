@@ -49,20 +49,6 @@ ul.events li p.name {
 }
 
 /* ----------------------------------------------------------------------------
- * Top Navigation
- */
-
-ul.top_navigation {
-  padding: 5px;
-  border-bottom: 1px solid black;
-}
-
-ul.top_navigation li {
-  font-weight: bold;
-  font-size: 12pt;
-}
-
-/* ----------------------------------------------------------------------------
  * Canvas
  */
 #canvas {
@@ -78,7 +64,6 @@ ul.top_navigation li {
 }
 
 a.renders {
-  font-size: 10pt;
 }
 
 a.renders.visible {
@@ -86,13 +71,32 @@ a.renders.visible {
 }
 
 /* ----------------------------------------------------------------------------
- * Header/Footer
+ * Header
  */
 #header {
+  border-bottom: 2px solid #afafaf;
+  background: #efefef;
 }
 
+/* ----------------------------------------------------------------------------
+ * Header Navigation
+ */
+
+#header ul.navigation {
+  padding: 5px;
+}
+
+#header ul.navigation li {
+  font-weight: bold;
+  font-size: 12pt;
+}
+
+/* ----------------------------------------------------------------------------
+ * Footer
+ */
 #footer {
-  border-top: 1px solid #afafaf;
+  padding: 5px;
+  border-top: 2px solid #afafaf;
   font-size: 9pt;
   color: #afafaf;
 }
