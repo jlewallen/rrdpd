@@ -1,12 +1,19 @@
 <div class="graphs">
-  <% var defaultGraph = model.defaultGraph() %>
-  <!--
-  <h2><%= model.title %></h2>
-  <ul class="options">
-    <li>A</li>
-    <li>B</li>
+  <%
+  var defaultGraph = model.defaultGraph()
+  %>
+  <ul class="menu">
+    <% jQuery.each(model.menu, function(i, option) { %>
+      <li>
+      <%= i %>:
+      <ul class="submenu">
+        <% jQuery.each(model.menu[i], function(i, option) { %>
+          <li><a href="#" data-key=""><%= i %></a></li>
+        <% }); %>
+      </ul>
+      </li>
+    <% }); %>
   </ul>
-  -->
   <div class="graph">
     <img src="<%= defaultGraph.uri %>" />
   </div>

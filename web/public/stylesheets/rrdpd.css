@@ -109,14 +109,21 @@ div.graphs div.graph {
   margin-bottom: 5px;
 }
 
-div.graphs ul {
+div.graphs ul.menu {
+  font-size: 12px;
 }
 
-div.graphs ul li {
+div.graphs ul.menu li {
+  font-weight: bold;
+}
+
+div.graphs ul.submenu {
   display: inline;
 }
 
-div.graphs ul li a {
+div.graphs ul.submenu li {
+  font-weight: normal;
+  display: inline;
 }
 
 /* ----------------------------------------------------------------------------

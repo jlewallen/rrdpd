@@ -64,21 +64,32 @@ class Item
 end
 
 class Browser
-  def initialize(item)
+  def initialize(item, source=nil, counter=nil)
     @item = item
+    @source = source || item.sources.default
+    @counter = counter || item.counters.default
+    @graphable = Graphable.new(@source.name, @item.name, @counter.name)
   end
 
   def graphs
-    source = @item.sources.default
-    counter = @item.counters.default
-    graphable = @item.graphable(source, counter)
-    [ graphable.to_graph ]
+    [
+    @graphable.to_graph
+    ]
   end
 
   def to_json
     {
       :name => @item.name,
-      :graphs => graphs
+      :graphs => graphs,
+      :menu => {
+        :timespan => {
+          '1day'  => @graphable.to_graph({ :starting => '1day'  }),
+          '3days' => @graphable.to_graph({ :starting => '3days' }),
+          '1week' => @graphable.to_graph({ :starting => '1week' }),
+          '2week' => @graphable.to_graph({ :starting => '2week' }),
+          '4week' => @graphable.to_graph({ :starting => '4week' })
+        }
+      }
     }.to_json
   end
 end
@@ -90,10 +101,11 @@ class Graphable
     @counter = counter
   end
 
-  def title
-    @source + " " + @name + " " + @counter.to_s
+  def to_graph(extra={})
+    Graph.new(title, uri(extra))
   end
 
+  private
   def parameters
     {
       :source => @source,
@@ -106,11 +118,11 @@ class Graphable
     }
   end
 
-  def default_uri
-    Merb::Router.url(:render, parameters)
+  def uri(extra={})
+    Merb::Router.url(:render, parameters.merge(extra))
   end
 
-  def to_graph
-    Graph.new(title, default_uri)
+  def title
+    @source + " " + @name + " " + @counter.to_s
   end
 end
