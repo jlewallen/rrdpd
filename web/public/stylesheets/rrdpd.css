@@ -45,6 +45,7 @@ html {
   border: 1px solid #afafaf;
   background: #efefef;
   width: 250px;
+  cursor: pointer;
 }
 
 #menu li.renders.visible {
