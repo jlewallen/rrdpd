@@ -1,18 +1,9 @@
 require 'set'
 
-class SourceSet < SortedSet
+class SetWithefault < SortedSet
   def default
-    self.each do |s|
-      return s if s.is_default
-    end
-    nil
-  end
-end
-
-class CounterSet < SortedSet
-  def default
-    self.each do |s|
-      return s if s.is_default
+    self.each do |v|
+      return v if v.is_default
     end
     nil
   end
@@ -28,8 +19,8 @@ class Item
   def initialize(name, category)
     @name = name
     @category = category
-    @sources = SourceSet.new
-    @counters = CounterSet.new
+    @sources = SetWithefault.new
+    @counters = SetWithefault.new
   end
 
   def add_counter(type)
