@@ -29,17 +29,21 @@ $(function() {
     registerActions: function() {
     },
 
+    transform: function(model) {
+      return model;
+    },
+
     queryAndShow: function(url, container) {
       var self = this;
       jQuery.getJSON(url, function(data) {
-        self._show(container, self._transform(data), true);
+        self._show(container, self.transform(data), true);
       });
     },
 
     queryAndAppend: function(url, container) {
       var self = this;
       jQuery.getJSON(url, function(data) {
-        self._show(container, self._transform(data), false);
+        self._show(container, self.transform(data), false);
       });
     },
 
@@ -52,6 +56,10 @@ $(function() {
     
     addAction: function(name, matcher, callback) {
       this._actions.push(new this.Action(name, matcher ? matcher : '*', callback));
+    },
+
+    getTop: function() {
+      return this._top;
     },
     
     _render: function(path, model) {
@@ -69,10 +77,10 @@ $(function() {
       this._actions = [];
       this.registerActions();
       this._attachActions();
+      this.afterRender();
     },
 
-    _transform: function(model) {
-      return model;
+    afterRender: function() {
     },
 
     Action: Class.extend({
@@ -88,7 +96,7 @@ $(function() {
       for (var i = 0; i < this._actions.length; i++) {
         var action = this._actions[i];
         this._top.bind(action.name, { action: action }, function(ev, data) {
-          self._onEvent(ev, data);
+          return self._onEvent(ev, data);
         });
       }
       this._isAttached = true;
@@ -114,16 +122,17 @@ $(function() {
         });
       }
       if (matched) {
-        this[action.callback](ev, data);
+        return this[action.callback](ev, data);
       }
+      return true;
     }
   });
 
   global.WelcomeController = ApplicationController.extend({
     initialize: function() {
-      this._super("/ejs/menu");
+      this._super('/ejs/menu');
       this._map = {};
-      this.queryAndShow("/query/categorized", "#menu");
+      this.queryAndShow('/query/categorized', '#menu');
     },
 
     registerActions: function() {
@@ -133,7 +142,7 @@ $(function() {
 
     _graphableSelected: function(ev) {
       var node = $(ev.receiver);                      
-      var key = node.property("key");
+      var key = node.property('key');
       if (!node.hasClass('visible'))
       {
         this._map[key] = new GraphController(key);
@@ -173,11 +182,25 @@ $(function() {
       this.queryAndAppend(uri, "#canvas");
     },
 
-    _transform: function(model) {
+    transform: function(model) {
       return new GraphModel(model);
     },
 
     registerActions: function() {
+      this.addAction('click', '.displays', '_onDisplay');
+    },
+
+    afterRender: function() {
+      this.getTop().find('.displays:first').addClass('visible');
+    },
+
+    _onDisplay: function(ev) {
+      var receiver = $(ev.receiver);
+      var key = receiver.property('key');
+      this.getTop().find('div.graph img').attr('src', key);
+      this.getTop().find('.visible').removeClass('visible');
+      receiver.addClass('visible');
+      return false;
     }
   });
 
