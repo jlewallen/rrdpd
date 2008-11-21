@@ -66,11 +66,11 @@ class Browser
     @source = source
     @counter = counter
     @parameters = parameters
-    @graphable = Graphable.new(@item.category.name, @source.name, @item.name, @counter.name)
+    @graphable = Graphable.new(@item.category.name, @source.name, @item.name, @counter.name, @parameters)
   end
 
   def graphs
-    [ @graphable.to_graph(@parameters) ]
+    [ @graphable.to_graph ]
   end
 
   def to_json
@@ -95,7 +95,7 @@ class Browser
 end
 
 class Graphable
-  def initialize(category, source, name, counter)
+  def initialize(category, source, name, counter, parameters)
     @category = category
     @source = source
     @name = name
@@ -108,17 +108,21 @@ class Graphable
       :ending => 'now',
       :w => 600,
       :h => 200
-    }
+    }.merge(parameters)
   end
 
   def to_graph(extra={})
     p = @parameters.merge(extra)
-    Graph.new(title, uri(extra), Urls.graph(@category, @name, @source, p[:counter], p[:starting]))
+    Graph.new(title, image_uri(p), uri(p))
   end
 
   private
-  def uri(extra={})
-    Merb::Router.url(:render, @parameters.merge(extra))
+  def uri(p)
+    Urls.graph(@category, @name, @source, p[:counter], p[:starting])
+  end
+
+  def image_uri(p)
+    Merb::Router.url(:render, p)
   end
 
   def title

@@ -36,14 +36,21 @@ $(function() {
     queryAndShow: function(url, container) {
       var self = this;
       jQuery.getJSON(url, function(data) {
-        self._show(container, self.transform(data), true);
+        self._show(container, self.transform(data), true, false);
       });
     },
 
     queryAndAppend: function(url, container) {
       var self = this;
       jQuery.getJSON(url, function(data) {
-        self._show(container, self.transform(data), false);
+        self._show(container, self.transform(data), false, false);
+      });
+    },
+
+    queryAndReplace: function(url, container) {
+      var self = this;
+      jQuery.getJSON(url, function(data) {
+        self._show(container, self.transform(data), false, true);
       });
     },
 
@@ -68,12 +75,18 @@ $(function() {
       return $(template.render({ model: this._model }));
     },
 
-    _show: function(container, model, emptyContainer) {
-      this._top = this._render(this._templateName, model);
+    _show: function(container, model, emptyContainer, doReplace) {
+      var newTop = this._render(this._templateName, model);
       if (emptyContainer) {
         $(container).empty();
       }
-      $(container).append(this._top);
+      if (doReplace && this._top != null) {
+        $(this._top).before(newTop).remove();
+      }
+      else {
+        $(container).append(newTop);
+      }
+      this._top = newTop;
       this._actions = [];
       this.registerActions();
       this._attachActions();
@@ -179,6 +192,7 @@ $(function() {
   global.GraphController = ApplicationController.extend({
     initialize: function(uri) {
       this._super("/ejs/graph");
+      this._uri = uri;
       this.queryAndAppend(uri, "#canvas");
     },
 
@@ -191,15 +205,13 @@ $(function() {
     },
 
     afterRender: function() {
-      this.getTop().find('.displays:first').addClass('visible');
+      $(".displays[data-key='" + this._uri + "']").addClass('visible');
     },
 
     _onDisplay: function(ev) {
       var receiver = $(ev.receiver);
-      var key = receiver.property('key');
-      this.getTop().find('div.graph img').attr('src', key);
-      this.getTop().find('.visible').removeClass('visible');
-      receiver.addClass('visible');
+      this._uri = receiver.property('key');
+      this.queryAndReplace(this._uri);
       return false;
     }
   });
