@@ -9,19 +9,8 @@
     <% if (item.description.length > 0) { %>
       <p class="description"><%= item.description %></p>
     <% } %>
-      <%
-      jQuery.each(item.sources, function(k, source) {
-        if (source.name == "all") {
-        jQuery.each(source.types, function(l, type) {
-      %>
-      <a class="renders" data-key="<%= type.url %>" href="<%= type.url %>" title="<%= type.title %>"><%= type.grapher %></a>
-      <%
-        });
-        }
-      });
-      %>
   </li>
-<%
+  <%
   });
 });
 %>

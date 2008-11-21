@@ -1,23 +1,19 @@
 class CounterType
-  attr_reader :grapher
+  include Comparable
+  
+  attr_reader :name
 
-  def initialize(dod)
-    @grapher = dod.grapher
-    @title = dod.unique_name
-    @uri = dod.uri
-    @dod = dod
-  end
-
-  def default_graph
-    Graph.new(@dod.name, @dod.unique_name, @dod.uri)
+  def initialize(name)
+    @name = name
   end
 
   def to_json
     {
-      :grapher => @grapher,
-      :title => @title,
-      :url => @uri,
-      :timespans => Timespan.standard(@dod)
+      :name => @name
     }.to_json
+  end
+
+  def <=>(anOther)
+    name.to_s <=> anOther.name.to_s
   end
 end

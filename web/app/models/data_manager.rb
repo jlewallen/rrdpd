@@ -80,37 +80,19 @@ class DataManager
     categories = {}
     items = {}
     sources = {}
+    counter_types = {}
 
     databases.each do |dod|
       category = (categories[dod.category] ||= Category.new(dod.category))
       source = (sources[dod.source] ||= Source.new(dod.source))
       item = (items[dod.name] ||= Item.new(dod.name))
+      counter_type = (counter_types[dod.grapher] ||= CounterType.new(dod.grapher))
+      item.add_source(source)
+      item.add_counter_type(counter_type)
       category.add_item(item)
     end
 
-    return categories.values
-    
-    databases.each do |dod|
-      category = (by_category[dod.category] ||= {})
-      sources = (category[dod.name] ||= {})
-      ctypes = (sources[dod.source] ||= [])
-      ctypes << CounterType.new(dod)
-    end
-
-    categories = by_category.map do |cname, v|
-      evs = v.map do |iname, v|
-        srcs = v.map do |sname, v|
-          types = v.map do |dod|
-            dod
-          end
-          types.sort! { |a, b| a.grapher.to_s <=> b.grapher.to_s }
-          Source.new(sname, types)
-        end
-        Item.new(iname, srcs)
-      end
-      evs.sort! { |a, b| a.name <=> b.name }
-      Category.new(cname, evs)
-    end
+    categories.values
   end
 
   private
