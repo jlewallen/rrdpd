@@ -1,24 +1,17 @@
 class DatabaseOnDisk
 	attr_reader :path
+  attr_reader :category
 	attr_reader :source
-	attr_reader :grapher
 	attr_reader :name
+	attr_reader :grapher
 
-	def initialize(grapher, source, name, path)
-		@grapher = grapher
+	def initialize(path, category, source, name, grapher)
+		@path = path
+    @category = category
 		@source = source
 		@name = name
-		@path = path
-    @display_name = name
+		@grapher = grapher
 	end
-
-  def display_name=(value)
-    @display_name = value
-  end
-
-  def display_name
-    @display_name
-  end
 
 	def unique_name
 		@path.basename('.rrd').to_s

@@ -22,11 +22,23 @@ class Finder
 		Dir[@cfg.data.join("*.rrd")].each do |file|
 			path = Pathname.new(file)
 			if path.basename.to_s =~ /^([^-]+)-(.+)-([^-]+)\.rrd$/ then
-				all << DatabaseOnDisk.new($3.to_sym, $1, $2, path)
+				all << create(path, $1, $2, $3.to_sym)
 			end
 		end
     all
 	end
+
+  private
+  def create(path, source, name, grapher)
+    category = Category::DEFAULT_NAME
+    @cfg.categories.each do |cdef|
+      if changed = cdef.transform(name) then
+        name = changed
+        category = cdef.name
+      end
+    end
+    DatabaseOnDisk.new(path, category, source, name, grapher)
+  end
 end
 
 class DataManager
@@ -47,14 +59,14 @@ class DataManager
   end
 
   def self.find_database_by_name(name)
-    foreach_dod do |dod|
+    databases.each do |dod|
       next if dod.name != name
       return dod
     end
   end
 
   def self.find_database(source_name, name, grapher)
-    foreach_dod do |dod|
+    databases.each do |dod|
       next if dod.source != source_name
       next if dod.name != name
       next if dod.grapher != grapher
@@ -65,16 +77,28 @@ class DataManager
 
   def self.find_categorized
     by_category = {}
+    categories = {}
+    items = {}
+    sources = {}
 
-    foreach_dod_by_category do |cname, dod|
-      category = (by_category[cname] ||= {})
-      sources = (category[dod.display_name] ||= {})
+    databases.each do |dod|
+      category = (categories[dod.category] ||= Category.new(dod.category))
+      source = (sources[dod.source] ||= Source.new(dod.source))
+      item = (items[dod.name] ||= Item.new(dod.name))
+      category.add_item(item)
+    end
+
+    return categories.values
+    
+    databases.each do |dod|
+      category = (by_category[dod.category] ||= {})
+      sources = (category[dod.name] ||= {})
       ctypes = (sources[dod.source] ||= [])
       ctypes << CounterType.new(dod)
     end
 
     categories = by_category.map do |cname, v|
-      evs = v.map do |ename, v|
+      evs = v.map do |iname, v|
         srcs = v.map do |sname, v|
           types = v.map do |dod|
             dod
@@ -82,7 +106,7 @@ class DataManager
           types.sort! { |a, b| a.grapher.to_s <=> b.grapher.to_s }
           Source.new(sname, types)
         end
-        Item.new(ename, ename, srcs)
+        Item.new(iname, srcs)
       end
       evs.sort! { |a, b| a.name <=> b.name }
       Category.new(cname, evs)
@@ -90,25 +114,6 @@ class DataManager
   end
 
   private
-  def self.foreach_dod_by_category(&blk)
-    foreach_dod do |dod|
-      category = 'ALL'
-      cfg.categories.each do |cdef|
-        if new_name = cdef.transform(dod.name) then
-          dod.display_name = new_name
-          category = cdef.name
-        end
-      end
-      yield category, dod
-    end
-  end
-
-  def self.foreach_dod(&blk)
-    databases.each do |dod|
-      yield dod
-    end
-  end
-
   def self.databases
 		@@databases ||= Finder.new(cfg).databases
   end

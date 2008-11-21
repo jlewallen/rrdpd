@@ -1,21 +1,24 @@
-class Category
-  attr_reader :name
+require 'set'
 
-  def initialize(name, items)
+class Category
+  DEFAULT_NAME = 'Default'
+
+  attr_reader :name
+  attr_reader :items
+
+  def initialize(name)
     @name = name
-    @items = items
+    @items = SortedSet.new
   end
 
-  def graphs
-    @items.map do |ev|
-      ev.default_graph
-    end
+  def add_item(item)
+    @items << item
   end
 
   def to_json
     { 
       :name => @name,
-      :items => @items
+      :items => @items.to_a
     }.to_json
   end
 end
