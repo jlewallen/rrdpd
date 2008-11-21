@@ -22,6 +22,7 @@ class Item
   attr_reader :name
   attr_reader :sources
   attr_reader :counters
+  attr_reader :category
 
   def initialize(name, category)
     @name = name
@@ -84,6 +85,10 @@ class Browser
           '1week' => @graphable.to_graph({ :starting => '1week' }),
           '2week' => @graphable.to_graph({ :starting => '2week' }),
           '4week' => @graphable.to_graph({ :starting => '4week' })
+        },
+        :counters => {
+          :yesno => @graphable.to_graph({ :grapher => :yesno }),
+          :quartiles => @graphable.to_graph({ :grapher => :quartiles })
         }
       }
     }.to_json

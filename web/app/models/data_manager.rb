@@ -5,10 +5,8 @@ class Urls
     Merb::Router.url(:item, :category => category, :name => name)
   end
 
-  def self.source(name)
-  end
-
-  def self.graph(name)
+  def self.specific_item(category, name, source, counter)
+    Merb::Router.url(:specific_item, :category => category, :name => name, :source => source, :counter => counter)
   end
 end
 
