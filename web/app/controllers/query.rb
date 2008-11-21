@@ -15,7 +15,7 @@ class Query < Application
   end
 
   def item(category, name, source=nil, counter=nil)
-    @query = DataManager.find_item(category, name, source, counter).browser
+    @query = DataManager.find_item(category, name).browser(source, counter ? counter.to_sym : nil)
     @query.instance_eval "def to_html; '<p>' + to_json + '</p>'; end"
     display @query
   end

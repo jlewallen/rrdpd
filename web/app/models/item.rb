@@ -7,6 +7,13 @@ class SetWithefault < SortedSet
     end
     nil
   end
+
+  def named?(name)
+    self.each do |v|
+      return v if v.name == name
+    end
+    nil
+  end
 end
 
 class Item
@@ -41,12 +48,10 @@ class Item
     }.to_json
   end
 
-  def browser
-    Browser.new(self)
-  end
-
-  def graphable(source, counter)
-    Graphable.new(source.name, name, counter.name)
+  def browser(source, counter)
+    source = source ? @sources.named?(source) : @sources.default
+    counter = counter ? @counters.named?(counter) : @counters.default
+    Browser.new(self, source, counter)
   end
 
   def <=>(anOther)
@@ -55,10 +60,10 @@ class Item
 end
 
 class Browser
-  def initialize(item, source=nil, counter=nil)
+  def initialize(item, source, counter)
     @item = item
-    @source = source || item.sources.default
-    @counter = counter || item.counters.default
+    @source = source
+    @counter = counter
     @graphable = Graphable.new(@source.name, @item.name, @counter.name)
   end
 
