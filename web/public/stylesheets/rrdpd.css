@@ -126,6 +126,10 @@ div.graphs ul.submenu li {
   display: inline;
 }
 
+div.graphs ul.submenu li a.visible {
+  font-weight: bold;
+}
+
 /* ----------------------------------------------------------------------------
  * Header
  */

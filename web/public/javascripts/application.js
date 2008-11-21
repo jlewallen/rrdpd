@@ -89,17 +89,18 @@ $(function() {
     },
 
     _graphableSelected: function(selected) {
-      var key = $(selected).property("key");
-      if (!$(selected).hasClass('visible'))
+      var node = $(selected);                      
+      var key = node.property("key");
+      if (!node.hasClass('visible'))
       {
-        this._map[key] = new GraphController(key);
+        this._map[key] = new GraphController(this, key);
       }
       else
       {
         this._map[key].remove();
         delete this._map[key];
       }
-      $(selected).toggleClass('visible');
+      node.toggleClass('visible');
     },
 
     _clearAllGraphs: function() {
@@ -122,8 +123,9 @@ $(function() {
   });
 
   global.GraphController = ApplicationController.extend({
-    initialize: function(uri) {
+    initialize: function(controller, uri) {
       this._super("/ejs/graph");
+      this._controller = controller;
       this.queryAndAppend(uri, "#canvas");
     },
 
@@ -132,7 +134,6 @@ $(function() {
     },
 
     registerActions: function() {
-      var self = this;
     }
   });
 
