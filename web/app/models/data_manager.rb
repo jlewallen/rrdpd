@@ -31,18 +31,32 @@ class DatabaseOnDisk
   end
 end
 
+class Urls
+  def self.item(name)
+    Merb::Router.url(:item, :name => name)
+  end
+
+  def self.source(name)
+  end
+
+  def self.graph(name)
+  end
+end
+
 class Finder
 	def initialize(cfg)
 		@cfg = cfg
 	end
 
-	def databases(&blk)
+	def databases
+    all = []
 		Dir[@cfg.data.join("*.rrd")].each do |file|
 			path = Pathname.new(file)
 			if path.basename.to_s =~ /^([^-]+)-(.+)-([^-]+)\.rrd$/ then
-				yield DatabaseOnDisk.new($3.to_sym, $1, $2, path)
+				all << DatabaseOnDisk.new($3.to_sym, $1, $2, path)
 			end
 		end
+    all
 	end
 end
 
@@ -63,7 +77,6 @@ class Category
   def to_json
     { 
       :name => @name,
-      :graphs => graphs,
       :items => @items
     }.to_json
   end
@@ -95,7 +108,8 @@ class CategorizedItem
       :name => @name,
       :description => @description,
       :graph => default_graph,
-      :sources => @sources
+      :sources => [],
+      :uri => Urls.item(@name)
     }.to_json
   end
 end
@@ -197,11 +211,22 @@ class DataManager
 		@@cfg
 	end
 
+  def self.find_source(name)
+    []
+  end
+
   def self.find_item(name)
     []
   end
 
-  def self.find(source_name, name, grapher)
+  def self.find_database_by_name(name)
+    foreach_dod do |dod|
+      next if dod.name != name
+      return dod
+    end
+  end
+
+  def self.find_database(source_name, name, grapher)
     foreach_dod do |dod|
       next if dod.source != source_name
       next if dod.name != name
@@ -252,9 +277,12 @@ class DataManager
   end
 
   def self.foreach_dod(&blk)
-		finder = Finder.new(cfg)
-		finder.databases do |dod|
+    databases.each do |dod|
       yield dod
     end
+  end
+
+  def self.databases
+		@@databases ||= Finder.new(cfg).databases
   end
 end

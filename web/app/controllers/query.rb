@@ -8,10 +8,25 @@ class Query < Application
     display @query
   end
 
+  def source(name)
+    @query = DataManager.find_source(name)
+    @query.instance_eval "def to_html; '<p>' + to_json + '</p>'; end"
+    display @query
+  end
+
   def item(name)
     @query = DataManager.find_item(name)
     @query.instance_eval "def to_html; '<p>' + to_json + '</p>'; end"
     display @query
+  end
+
+  def database(name)
+    @query = DataManager.find_database_by_name(name)
+    @query.instance_eval "def to_html; '<p>' + to_json + '</p>'; end"
+    display @query
+  end
+
+  def graph(source, name, grapher, starting, ending, w, h)
   end
 
 end
