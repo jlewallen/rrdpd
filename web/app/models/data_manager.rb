@@ -1,8 +1,8 @@
 require 'pathname'
 
 class Urls
-  def self.item(name)
-    Merb::Router.url(:item, :name => name)
+  def self.item(category, name)
+    Merb::Router.url(:item, :category => category, :name => name)
   end
 
   def self.source(name)
@@ -25,19 +25,21 @@ class DataManager
     []
   end
 
-  def self.find_item(name)
-    []
+  def self.find_item(category, name)
+    categories = find_categories
+    category = categories[category]
+    category.item?(name)
   end
 
   def self.find_database_by_name(name)
-    databases.each do |dod|
+    find_databases.each do |dod|
       next if dod.name != name
       return dod
     end
   end
 
   def self.find_database(source_name, name, grapher)
-    databases.each do |dod|
+    find_databases.each do |dod|
       next if dod.source != source_name
       next if dod.name != name
       next if dod.grapher != grapher
@@ -47,15 +49,15 @@ class DataManager
   end
 
   def self.find_categorized
-    categories
+    find_categories.values
   end
 
   private
-  def self.databases
+  def self.find_databases
 		@@databases ||= Finder.new(cfg).databases
   end
 
-  def self.categories
+  def self.find_categories
     @@categories ||= ModelBuilder.new(cfg).categories
   end
 end
@@ -74,14 +76,14 @@ class ModelBuilder
     @finder.databases.each do |dod|
       category = (categories[dod.category] ||= Category.new(dod.category))
       source = (sources[dod.source] ||= Source.new(dod.source))
-      item = (items[dod.name] ||= Item.new(dod.name))
+      item = (items[dod.name] ||= Item.new(dod.name, category))
       counter = (counters[dod.grapher] ||= CounterType.new(dod.grapher))
       item.add_source(source)
       item.add_counter(counter)
       category.add_item(item)
     end
 
-    categories.values
+    categories
   end
 end
 

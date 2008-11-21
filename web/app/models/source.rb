@@ -1,4 +1,6 @@
 class Source
+  DEFAULT_NAME = 'ALL'
+
   include Comparable
   
   attr_reader :name

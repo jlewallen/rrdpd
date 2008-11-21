@@ -15,6 +15,10 @@ class Category
     @items << item
   end
 
+  def item?(name)
+    @items.select { |item| item.name == name }.first
+  end
+
   def to_json
     { 
       :name => @name,

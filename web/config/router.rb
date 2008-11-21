@@ -41,7 +41,7 @@ Merb::Router.prepare do
   # clients from calling your create or destroy actions with a GET
   match('/source/:name', :name => /[^\/,;?]+/).to(:controller => 'sources', :action => 'view').name(:source)
   match('/render/:source/:name/:grapher/:starting/:ending/:w/:h', :source => /[^\/,;?]+/).to(:controller => 'render', :action => 'graph').name(:render)
-  match('/query/item/:name', :name => /[^\/,;?]+/).to(:controller => 'query', :action => 'item').name(:item)
+  match('/query/item/:category/:name', :name => /[^\/,;?]+/).to(:controller => 'query', :action => 'item').name(:item)
   match('/query/source/:name', :name => /[^\/,;?]+/).to(:controller => 'query', :action => 'source').name(:source)
   match('/').to(:controller => 'welcome', :action => 'index')
 

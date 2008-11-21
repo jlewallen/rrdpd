@@ -5,8 +5,9 @@ class Item
 
   attr_reader :name
 
-  def initialize(name)
+  def initialize(name, category)
     @name = name
+    @category = category
     @sources = SortedSet.new
     @counters = SortedSet.new
   end
@@ -25,7 +26,7 @@ class Item
       :description => '',
       :sources => @sources.to_a,
       :counters => @counters.to_a,
-      :uri => Urls.item(@name)
+      :uri => Urls.item(@category.name, @name)
     }.to_json
   end
 
