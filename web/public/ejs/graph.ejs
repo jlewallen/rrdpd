@@ -8,13 +8,13 @@
       <%= i %>:
       <ul class="submenu">
         <% jQuery.each(model.menu[i], function(i, option) { %>
-          <li><a class="displays" href="#" data-key="<%= option.uri %>"><%= i %></a></li>
+          <li><a class="displays" href="#" data-key="<%= option.image %>"><%= i %></a></li>
         <% }); %>
       </ul>
       </li>
     <% }); %>
   </ul>
   <div class="graph">
-    <img src="<%= defaultGraph.uri %>" />
+    <img src="<%= defaultGraph.image %>" />
   </div>
 </div>

@@ -66,7 +66,7 @@ class Browser
     @source = source
     @counter = counter
     @parameters = parameters
-    @graphable = Graphable.new(@source.name, @item.name, @counter.name)
+    @graphable = Graphable.new(@item.category.name, @source.name, @item.name, @counter.name)
   end
 
   def graphs
@@ -95,7 +95,8 @@ class Browser
 end
 
 class Graphable
-  def initialize(source, name, counter)
+  def initialize(category, source, name, counter)
+    @category = category
     @source = source
     @name = name
     @counter = counter
@@ -111,7 +112,7 @@ class Graphable
   end
 
   def to_graph(extra={})
-    Graph.new(title, uri(extra))
+    Graph.new(title, uri(extra), Urls.graph(@category, @source, @name, @counter, @parameters[:starting]))
   end
 
   private
