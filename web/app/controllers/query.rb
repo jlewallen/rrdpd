@@ -8,8 +8,8 @@ class Query < Application
     display @query
   end
 
-  def item(category, name, source=nil, counter=nil)
-    @query = DataManager.find_item(category, name).browser(source, counter ? counter.to_sym : nil)
+  def item(category, name, source, counter)
+    @query = DataManager.find_item(category, name).browser(source, counter.to_sym)
     @query.instance_eval "def to_html; '<p>' + to_json + '</p>'; end"
     display @query
   end
@@ -20,8 +20,8 @@ class Query < Application
     display @query
   end
 
-  def graph(source, name, grapher, starting, ending, w, h)
-    @query = []
+  def graph(category, name, source, counter, starting)
+    @query = DataManager.find_item(category, name).browser(source, counter.to_sym, { :starting => starting })
     @query.instance_eval "def to_html; '<p>' + to_json + '</p>'; end"
     display @query
   end

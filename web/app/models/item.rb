@@ -45,14 +45,14 @@ class Item
       :description => '',
       :sources => @sources.to_a,
       :counters => @counters.to_a,
-      :uri => Urls.item(@category.name, @name)
+      :uri => Urls.graph(@category.name, @name, @sources.default.name, @counters.default.name, '1day')
     }.to_json
   end
 
-  def browser(source, counter)
+  def browser(source, counter, parameters={})
     source = source ? @sources.named?(source) : @sources.default
     counter = counter ? @counters.named?(counter) : @counters.default
-    Browser.new(self, source, counter)
+    Browser.new(self, source, counter, parameters)
   end
 
   def <=>(anOther)
@@ -61,17 +61,16 @@ class Item
 end
 
 class Browser
-  def initialize(item, source, counter)
+  def initialize(item, source, counter, parameters)
     @item = item
     @source = source
     @counter = counter
+    @parameters = parameters
     @graphable = Graphable.new(@source.name, @item.name, @counter.name)
   end
 
   def graphs
-    [
-    @graphable.to_graph
-    ]
+    [ @graphable.to_graph(@parameters) ]
   end
 
   def to_json
@@ -100,15 +99,7 @@ class Graphable
     @source = source
     @name = name
     @counter = counter
-  end
-
-  def to_graph(extra={})
-    Graph.new(title, uri(extra))
-  end
-
-  private
-  def parameters
-    {
+    @parameters = {
       :source => @source,
       :name => @name,
       :grapher => @counter,
@@ -119,11 +110,16 @@ class Graphable
     }
   end
 
+  def to_graph(extra={})
+    Graph.new(title, uri(extra))
+  end
+
+  private
   def uri(extra={})
-    Merb::Router.url(:render, parameters.merge(extra))
+    Merb::Router.url(:render, @parameters.merge(extra))
   end
 
   def title
-    @source + " " + @name + " " + @counter.to_s
+    @source + " " + @name + " " + @counter.to_s + " " + @parameters[:starting]
   end
 end

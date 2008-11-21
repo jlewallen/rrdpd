@@ -27,8 +27,6 @@
 
 Merb.logger.info("Compiling routes...")
 Merb::Router.prepare do
-  resources :graphs
-  resources :databases
   # RESTful routes
   # resources :posts
   
@@ -40,8 +38,8 @@ Merb::Router.prepare do
   # routes, you may want to comment/remove this line to prevent
   # clients from calling your create or destroy actions with a GET
   match('/render/:source/:name/:grapher/:starting/:ending/:w/:h', :source => /[^\/,;?]+/).to(:controller => 'render', :action => 'graph').name(:render)
-  match('/query/item/:category/:name', :name => /[^\/,;?]+/).to(:controller => 'query', :action => 'item').name(:item)
-  match('/query/item/:category/:name/:source/:counter', :name => /[^\/,;?]+/).to(:controller => 'query', :action => 'item').name(:specific_item)
+  match('/query/item/:category/:name/:source/:counter', :name => /[^\/,;?]+/).to(:controller => 'query', :action => 'item').name(:item)
+  match('/query/graph/:category/:name/:source/:counter/:starting', :name => /[^\/,;?]+/).to(:controller => 'query', :action => 'graph').name(:graph)
   match('/').to(:controller => 'welcome', :action => 'index')
 
   default_routes

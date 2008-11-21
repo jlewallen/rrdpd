@@ -1,12 +1,12 @@
 require 'pathname'
 
 class Urls
-  def self.item(category, name)
-    Merb::Router.url(:item, :category => category, :name => name)
+  def self.item(category, name, source, counter)
+    Merb::Router.url(:item, :category => category, :name => name, :source => source, :counter => counter)
   end
 
-  def self.specific_item(category, name, source, counter)
-    Merb::Router.url(:specific_item, :category => category, :name => name, :source => source, :counter => counter)
+  def self.graph(category, name, source, counter, starting)
+    Merb::Router.url(:graph, :category => category, :name => name, :source => source, :counter => counter, :starting => starting)
   end
 end
 
