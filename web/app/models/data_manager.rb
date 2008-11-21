@@ -25,7 +25,7 @@ class DataManager
     []
   end
 
-  def self.find_item(category, name)
+  def self.find_item(category, name, source, counter)
     categories = find_categories
     category = categories[category]
     category.item?(name)

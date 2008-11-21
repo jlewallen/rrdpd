@@ -39,10 +39,9 @@ Merb::Router.prepare do
   # This is fine for most cases.  If you're heavily using resource-based
   # routes, you may want to comment/remove this line to prevent
   # clients from calling your create or destroy actions with a GET
-  match('/source/:name', :name => /[^\/,;?]+/).to(:controller => 'sources', :action => 'view').name(:source)
   match('/render/:source/:name/:grapher/:starting/:ending/:w/:h', :source => /[^\/,;?]+/).to(:controller => 'render', :action => 'graph').name(:render)
   match('/query/item/:category/:name', :name => /[^\/,;?]+/).to(:controller => 'query', :action => 'item').name(:item)
-  match('/query/source/:name', :name => /[^\/,;?]+/).to(:controller => 'query', :action => 'source').name(:source)
+  match('/query/item/:category/:name/:source/:counter', :name => /[^\/,;?]+/).to(:controller => 'query', :action => 'item').name(:specific_item)
   match('/').to(:controller => 'welcome', :action => 'index')
 
   default_routes
