@@ -3,14 +3,14 @@ class DatabaseOnDisk
   attr_reader :category
 	attr_reader :source
 	attr_reader :name
-	attr_reader :grapher
+	attr_reader :counter
 
-	def initialize(path, category, source, name, grapher)
+	def initialize(path, category, source, name, counter)
 		@path = path
     @category = category
 		@source = source
 		@name = name
-		@grapher = grapher
+		@counter = counter
 	end
 
 	def unique_name
@@ -18,6 +18,6 @@ class DatabaseOnDisk
 	end
 
   def uri(starting='1days', ending='now', w=600, h=200)
-    Merb::Router.url(:render, :source => @source, :name => @name, :grapher => @grapher, :starting => starting, :ending => ending, :w => w, :h => h)
+    Merb::Router.url(:render, :source => @source, :name => @name, :counter => @counter, :starting => starting, :ending => ending, :w => w, :h => h)
   end
 end

@@ -32,14 +32,14 @@ class DataManager
     end
   end
 
-  def self.find_database(source_name, name, grapher)
+  def self.find_database(source_name, name, counter)
     find_databases.each do |dod|
       next if dod.source != source_name
       next if dod.name != name
-      next if dod.grapher != grapher
+      next if dod.counter != counter
       return dod
     end
-    raise "Database Not Found: #{source_name} #{name} #{grapher}"
+    raise "Database Not Found: #{source_name} #{name} #{counter}"
   end
 
   def self.find_categorized
@@ -71,7 +71,7 @@ class ModelBuilder
       category = (categories[dod.category] ||= Category.new(dod.category))
       source = (sources[dod.source] ||= Source.new(dod.source))
       item = (items[dod.name] ||= Item.new(dod.name, category))
-      counter = (counters[dod.grapher] ||= CounterType.new(dod.grapher))
+      counter = (counters[dod.counter] ||= CounterType.new(dod.counter))
       item.add_source(source)
       item.add_counter(counter)
       category.add_item(item)
@@ -98,7 +98,7 @@ class Finder
 	end
 
   private
-  def create(path, source, name, grapher)
+  def create(path, source, name, counter)
     category = Category::DEFAULT_NAME
     @cfg.categories.each do |cdef|
       if changed = cdef.transform(name) then
@@ -106,6 +106,6 @@ class Finder
         category = cdef.name
       end
     end
-    DatabaseOnDisk.new(path, category, source, name, grapher)
+    DatabaseOnDisk.new(path, category, source, name, counter)
   end
 end

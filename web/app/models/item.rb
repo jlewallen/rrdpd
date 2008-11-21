@@ -86,8 +86,8 @@ class Browser
           '4week' => @graphable.to_graph({ :starting => '4week' })
         },
         :counters => {
-          :yesno => @graphable.to_graph({ :grapher => :yesno }),
-          :quartiles => @graphable.to_graph({ :grapher => :quartiles })
+          :yesno => @graphable.to_graph({ :counter => :yesno }),
+          :quartiles => @graphable.to_graph({ :counter => :quartiles })
         }
       }
     }.to_json
@@ -103,7 +103,7 @@ class Graphable
     @parameters = {
       :source => @source,
       :name => @name,
-      :grapher => @counter,
+      :counter => @counter,
       :starting => '1day',
       :ending => 'now',
       :w => 600,
@@ -112,7 +112,8 @@ class Graphable
   end
 
   def to_graph(extra={})
-    Graph.new(title, uri(extra), Urls.graph(@category, @source, @name, @counter, @parameters[:starting]))
+    p = @parameters.merge(extra)
+    Graph.new(title, uri(extra), Urls.graph(@category, @name, @source, p[:counter], p[:starting]))
   end
 
   private
