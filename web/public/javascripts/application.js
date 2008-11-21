@@ -21,16 +21,20 @@ $(function() {
     initialize: function(templateName) {
       this._templateName = templateName;
       this._top = null;
+      this._model = null;
     },
 
-    render: function(path, model) {
+    _render: function(path, model) {
+      this._model = model;
       var template = new EJS({ url: path + ".ejs" });
-      return template.render({ model: model });
+      return $(template.render({ model: this._model }));
     },
 
-    show: function(container, model) {
-      var rendered = this.render(this._templateName, model);
-      this._top = $(rendered);
+    _show: function(container, model, emptyContainer) {
+      this._top = this._render(this._templateName, model);
+      if (emptyContainer) {
+        $(container).empty();
+      }
       $(container).append(this._top);
       this.registerActions();
     },
@@ -38,7 +42,14 @@ $(function() {
     queryAndShow: function(url, container) {
       var self = this;
       jQuery.getJSON(url, function(data) {
-        self.show(container, data);
+        self._show(container, data, true);
+      });
+    },
+
+    queryAndAppend: function(url, container) {
+      var self = this;
+      jQuery.getJSON(url, function(data) {
+        self._show(container, data, false);
       });
     },
 
@@ -77,9 +88,7 @@ $(function() {
       var key = $(selected).property("key");
       if (!$(selected).hasClass('visible'))
       {
-        var graphController = new GraphController({});
-        graphController.show("#canvas", { title: selected.title, url: selected.href });
-        this._map[key] = graphController;
+        this._map[key] = new GraphController(key);
       }
       else
       {
@@ -99,13 +108,14 @@ $(function() {
   });
 
   global.GraphController = ApplicationController.extend({
-    initialize: function(model) {
+    initialize: function(uri) {
       this._super("/ejs/graph");
-      this.model = model;
+      this.queryAndAppend(uri, "#canvas");
     },
 
     registerActions: function() {
       var self = this;
+      console.log(this._model);
     }
   });
 
