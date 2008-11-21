@@ -21,10 +21,6 @@ class DataManager
 		@@cfg
 	end
 
-  def self.find_source(name)
-    []
-  end
-
   def self.find_item(category, name)
     categories = find_categories
     category = categories[category]
