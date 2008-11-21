@@ -17,7 +17,7 @@ class Grapher
 		parts << "-h " + h
 		parts << "--start -" + starting
 		parts << "--end " + ending
-		parts << "--title \"#{database.title}\""
+    # parts << "--title \"#{database.title}\""
 		get_parts(database).each do |p|
 			parts << p
 		end
