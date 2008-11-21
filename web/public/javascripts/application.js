@@ -39,17 +39,21 @@ $(function() {
       this.registerActions();
     },
 
+    _transform: function(model) {
+      return model;
+    },
+
     queryAndShow: function(url, container) {
       var self = this;
       jQuery.getJSON(url, function(data) {
-        self._show(container, data, true);
+        self._show(container, self._transform(data), true);
       });
     },
 
     queryAndAppend: function(url, container) {
       var self = this;
       jQuery.getJSON(url, function(data) {
-        self._show(container, data, false);
+        self._show(container, self._transform(data), false);
       });
     },
 
@@ -107,23 +111,29 @@ $(function() {
     }
   });
 
+  global.GraphModel = Class.extend({
+    initialize: function(model) {
+      jQuery.extend(this, model);
+    },
+
+    defaultGraph: function() {
+      return this.graphs[0];
+    }
+  });
+
   global.GraphController = ApplicationController.extend({
     initialize: function(uri) {
       this._super("/ejs/graph");
       this.queryAndAppend(uri, "#canvas");
     },
 
+    _transform: function(model) {
+      return new GraphModel(model);
+    },
+
     registerActions: function() {
       var self = this;
-      console.log(this._model);
     }
   });
-
-  global.Urls = {};
-
-  global.Urls.ForGraph = function(graph, starting, ending, w, h) {
-    return "/render/" + graph.source + "/" + graph.name + "/" + graph.grapher
-     + "/" + starting + "/" + ending + "/" + w + "/" + h;
-  };
 
 });

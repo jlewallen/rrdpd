@@ -1,4 +1,5 @@
 <div class="graphs">
+  <% var defaultGraph = model.defaultGraph() %>
   <!--
   <h2><%= model.title %></h2>
   <ul class="options">
@@ -7,6 +8,6 @@
   </ul>
   -->
   <div class="graph">
-    <img src="<%= model.url %>" />
+    <img src="<%= defaultGraph.uri %>" />
   </div>
 </div>

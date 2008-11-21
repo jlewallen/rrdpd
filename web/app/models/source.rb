@@ -9,6 +9,10 @@ class Source
     @name = name
   end
 
+  def is_default
+    @name =~ /ALL/i
+  end
+
   def to_json
     { 
       :name => @name

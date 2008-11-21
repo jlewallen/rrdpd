@@ -7,6 +7,10 @@ class CounterType
     @name = name
   end
 
+  def is_default
+    @name == :yesno
+  end
+
   def to_json
     {
       :name => @name
