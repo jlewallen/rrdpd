@@ -1,36 +1,5 @@
 require 'pathname'
 
-class DatabaseOnDisk
-	attr_reader :path
-	attr_reader :source
-	attr_reader :grapher
-	attr_reader :name
-
-	def initialize(grapher, source, name, path)
-		@grapher = grapher
-		@source = source
-		@name = name
-		@path = path
-    @display_name = name
-	end
-
-  def display_name=(value)
-    @display_name = value
-  end
-
-  def display_name
-    @display_name
-  end
-
-	def unique_name
-		@path.basename('.rrd').to_s
-	end
-
-  def uri(starting='1days', ending='now', w=600, h=200)
-    Merb::Router.url(:render, :source => @source, :name => @name, :grapher => @grapher, :starting => starting, :ending => ending, :w => w, :h => h)
-  end
-end
-
 class Urls
   def self.item(name)
     Merb::Router.url(:item, :name => name)
@@ -58,148 +27,6 @@ class Finder
 		end
     all
 	end
-end
-
-class Category
-  attr_reader :name
-
-  def initialize(name, items)
-    @name = name
-    @items = items
-  end
-
-  def graphs
-    @items.map do |ev|
-      ev.default_graph
-    end
-  end
-
-  def to_json
-    { 
-      :name => @name,
-      :items => @items
-    }.to_json
-  end
-end
-
-class CategorizedItem
-  attr_reader :name
-
-  def initialize(name, title, sources)
-    @name = name
-    @title = title
-    @description = ''
-    @sources = sources
-  end
-
-  def default_graph
-    all_source.default_graph
-  end
-
-  def all_source
-    @sources.each do |source|
-      return source if source.name =~ /all/i
-    end
-    raise "All source is missing?"
-  end
-
-  def to_json
-    { 
-      :name => @name,
-      :description => @description,
-      :graph => default_graph,
-      :sources => [],
-      :uri => Urls.item(@name)
-    }.to_json
-  end
-end
-
-class CategorizedSource
-  attr_reader :name
-
-  def initialize(name, types)
-    @name = name
-    @types = types
-  end
-
-  def default_graph
-    @types[0].default_graph
-  end
-
-  def to_json
-    { 
-      :name => @name,
-      :types => @types
-    }.to_json
-  end
-end
-
-class DatabaseType
-  attr_reader :grapher
-
-  def initialize(dod)
-    @grapher = dod.grapher
-    @title = dod.unique_name
-    @uri = dod.uri
-    @dod = dod
-  end
-
-  def default_graph
-    Graph.new(@dod.name, @dod.unique_name, @dod.uri)
-  end
-
-  def to_json
-    {
-      :grapher => @grapher,
-      :title => @title,
-      :url => @uri,
-      :timespans => Timespan.standard(@dod)
-    }.to_json
-  end
-end
-
-class Timespan
-  attr_reader :name
-
-  def initialize(name, uri)
-    @name = name
-    @uri = uri
-  end
-
-  def self.standard(dod)
-    [
-      Timespan.new('4weeks', dod.uri('4weeks', 'now')),
-      Timespan.new('1weeks', dod.uri('1weeks', 'now')),
-      Timespan.new('3days', dod.uri('3days', 'now')),
-      Timespan.new('1day', dod.uri('1day', 'now')),
-      Timespan.new('6hours', dod.uri('6hours', 'now'))
-    ]
-  end
-
-  def to_json
-    {
-      :name => @name,
-      :uri => @uri
-    }.to_json
-  end
-end
-
-class Graph
-  def initialize(name, title, image_uri)
-    @name = name
-    @title = title
-    @image_uri = image_uri
-    @related_graphs_uri = ''
-  end
-
-  def to_json
-    {
-      :name => @name,
-      :title => @title,
-      :related_graphs_uri => @related_graphs_uri,
-      :image_uri => @image_uri
-    }.to_json
-  end
 end
 
 class DataManager
@@ -242,8 +69,8 @@ class DataManager
     foreach_dod_by_category do |cname, dod|
       category = (by_category[cname] ||= {})
       sources = (category[dod.display_name] ||= {})
-      dtypes = (sources[dod.source] ||= [])
-      dtypes << DatabaseType.new(dod)
+      ctypes = (sources[dod.source] ||= [])
+      ctypes << CounterType.new(dod)
     end
 
     categories = by_category.map do |cname, v|
@@ -253,9 +80,9 @@ class DataManager
             dod
           end
           types.sort! { |a, b| a.grapher.to_s <=> b.grapher.to_s }
-          CategorizedSource.new(sname, types)
+          Source.new(sname, types)
         end
-        CategorizedItem.new(ename, ename, srcs)
+        Item.new(ename, ename, srcs)
       end
       evs.sort! { |a, b| a.name <=> b.name }
       Category.new(cname, evs)
