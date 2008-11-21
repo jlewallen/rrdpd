@@ -12,35 +12,6 @@ class Urls
   end
 end
 
-class Finder
-	def initialize(cfg)
-		@cfg = cfg
-	end
-
-	def databases
-    all = []
-		Dir[@cfg.data.join("*.rrd")].each do |file|
-			path = Pathname.new(file)
-			if path.basename.to_s =~ /^([^-]+)-(.+)-([^-]+)\.rrd$/ then
-				all << create(path, $1, $2, $3.to_sym)
-			end
-		end
-    all
-	end
-
-  private
-  def create(path, source, name, grapher)
-    category = Category::DEFAULT_NAME
-    @cfg.categories.each do |cdef|
-      if changed = cdef.transform(name) then
-        name = changed
-        category = cdef.name
-      end
-    end
-    DatabaseOnDisk.new(path, category, source, name, grapher)
-  end
-end
-
 class DataManager
 	def self.cfg=(value)
 		@@cfg = value
@@ -76,27 +47,69 @@ class DataManager
   end
 
   def self.find_categorized
-    by_category = {}
-    categories = {}
-    items = {}
-    sources = {}
-    counter_types = {}
-
-    databases.each do |dod|
-      category = (categories[dod.category] ||= Category.new(dod.category))
-      source = (sources[dod.source] ||= Source.new(dod.source))
-      item = (items[dod.name] ||= Item.new(dod.name))
-      counter_type = (counter_types[dod.grapher] ||= CounterType.new(dod.grapher))
-      item.add_source(source)
-      item.add_counter_type(counter_type)
-      category.add_item(item)
-    end
-
-    categories.values
+    categories
   end
 
   private
   def self.databases
 		@@databases ||= Finder.new(cfg).databases
+  end
+
+  def self.categories
+    @@categories ||= ModelBuilder.new(cfg).categories
+  end
+end
+
+class ModelBuilder
+  def initialize(cfg)
+    @finder = Finder.new(cfg)
+  end
+
+  def categories
+    categories = {}
+    items = {}
+    sources = {}
+    counters = {}
+
+    @finder.databases.each do |dod|
+      category = (categories[dod.category] ||= Category.new(dod.category))
+      source = (sources[dod.source] ||= Source.new(dod.source))
+      item = (items[dod.name] ||= Item.new(dod.name))
+      counter = (counters[dod.grapher] ||= CounterType.new(dod.grapher))
+      item.add_source(source)
+      item.add_counter(counter)
+      category.add_item(item)
+    end
+
+    categories.values
+  end
+end
+
+class Finder
+	def initialize(cfg)
+		@cfg = cfg
+	end
+
+	def databases
+    all = []
+		Dir[@cfg.data.join("*.rrd")].each do |file|
+			path = Pathname.new(file)
+			if path.basename.to_s =~ /^([^-]+)-(.+)-([^-]+)\.rrd$/ then
+				all << create(path, $1, $2, $3.to_sym)
+			end
+		end
+    all
+	end
+
+  private
+  def create(path, source, name, grapher)
+    category = Category::DEFAULT_NAME
+    @cfg.categories.each do |cdef|
+      if changed = cdef.transform(name) then
+        name = changed
+        category = cdef.name
+      end
+    end
+    DatabaseOnDisk.new(path, category, source, name, grapher)
   end
 end
