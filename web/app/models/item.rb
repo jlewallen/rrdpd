@@ -60,6 +60,20 @@ class Item
   end
 end
 
+class MenuEntry
+  def initialize(title, children)
+    @title = title
+    @children = children
+  end
+
+  def to_json
+    {
+      :title => @title,
+      :children => @children
+    }.to_json
+  end
+end
+
 class Browser
   def initialize(item, source, counter, parameters)
     @item = item
@@ -77,19 +91,25 @@ class Browser
     {
       :name => @item.name,
       :graphs => graphs,
-      :menu => {
-        :timespan => {
-          '1day'  => @graphable.to_graph({ :starting => '1day'  }),
-          '3days' => @graphable.to_graph({ :starting => '3days' }),
-          '1week' => @graphable.to_graph({ :starting => '1week' }),
-          '2week' => @graphable.to_graph({ :starting => '2week' }),
-          '4week' => @graphable.to_graph({ :starting => '4week' })
+      :menu => [
+        {
+          :title => 'counter',
+          :submenu => [
+            { :title => 'yesno', :graph => @graphable.to_graph({ :counter => :yesno }) },
+            { :title => 'quartiles', :graph => @graphable.to_graph({ :counter => :quartiles }) }
+          ]
         },
-        :counters => {
-          :yesno => @graphable.to_graph({ :counter => :yesno }),
-          :quartiles => @graphable.to_graph({ :counter => :quartiles })
+        {
+          :title => 'timespan',
+          :submenu => [
+            { :title => '1day',  :graph => @graphable.to_graph({ :starting => '1day'  }) },
+            { :title => '3days', :graph => @graphable.to_graph({ :starting => '3days' }) },
+            { :title => '1week', :graph => @graphable.to_graph({ :starting => '1week' }) },
+            { :title => '2week', :graph => @graphable.to_graph({ :starting => '2week' }) },
+            { :title => '4week', :graph => @graphable.to_graph({ :starting => '4week' }) }
+          ]
         }
-      }
+      ]
     }.to_json
   end
 end

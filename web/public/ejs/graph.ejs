@@ -4,12 +4,12 @@
   %>
   <h2><%= defaultGraph.title %></h2>
   <ul class="menu">
-    <% jQuery.each(model.menu, function(i, option) { %>
+    <% jQuery.each(model.menu, function(i, menu) { %>
       <li>
-      <%= i %>:
+      <%= menu.title %>:
       <ul class="submenu">
-        <% jQuery.each(model.menu[i], function(i, option) { %>
-          <li><a class="displays" href="#" data-key="<%= option.uri %>"><%= i %></a></li>
+        <% jQuery.each(menu.submenu, function(i, leaf) { %>
+          <li><a class="displays" href="#" data-key="<%= leaf.graph.uri %>"><%= leaf.title %></a></li>
         <% }); %>
       </ul>
       </li>
