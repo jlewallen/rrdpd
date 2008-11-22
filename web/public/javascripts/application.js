@@ -36,21 +36,7 @@ $(function() {
     queryAndShow: function(url, container) {
       var self = this;
       jQuery.getJSON(url, function(data) {
-        self._show(container, self.transform(data), true, false);
-      });
-    },
-
-    queryAndAppend: function(url, container) {
-      var self = this;
-      jQuery.getJSON(url, function(data) {
-        self._show(container, self.transform(data), false, false);
-      });
-    },
-
-    queryAndReplace: function(url, container) {
-      var self = this;
-      jQuery.getJSON(url, function(data) {
-        self._show(container, self.transform(data), false, true);
+        self._show(container, self.transform(data));
       });
     },
 
@@ -75,22 +61,23 @@ $(function() {
       return $(template.render({ model: this._model }));
     },
 
-    _show: function(container, model, emptyContainer, doReplace) {
-      var newTop = this._render(this._templateName, model);
-      if (emptyContainer) {
-        $(container).empty();
-      }
-      if (doReplace && this._top != null) {
-        $(this._top).before(newTop).remove();
-      }
-      else {
-        $(container).append(newTop);
-      }
-      this._top = newTop;
+    _show: function(container, model) {
+      var dom = this._render(this._templateName, model);
+      this._top = this.place($(container), dom);
       this._actions = [];
       this.registerActions();
       this._attachActions();
       this.afterRender();
+    },
+
+    place: function(container, dom) {
+      if (this._top != null) {
+        $(this._top).before(dom).remove();
+      }
+      else {
+        container.append(dom);
+      }
+      return dom;
     },
 
     afterRender: function() {
@@ -193,7 +180,7 @@ $(function() {
     initialize: function(uri) {
       this._super("/ejs/graph");
       this._uri = uri;
-      this.queryAndAppend(uri, "#canvas");
+      this.queryAndShow(uri, "#canvas");
     },
 
     transform: function(model) {
@@ -208,10 +195,20 @@ $(function() {
       $(".displays[data-key='" + this._uri + "']").addClass('visible');
     },
 
+    place: function(container, dom) {
+      if (this.getTop() != null) {
+        this.getTop().before(dom).remove();
+      }
+      else {
+        container.prepend(dom);
+      }
+      return dom;
+    },
+
     _onDisplay: function(ev) {
       var receiver = $(ev.receiver);
       this._uri = receiver.property('key');
-      this.queryAndReplace(this._uri);
+      this.queryAndShow(this._uri);
       return false;
     }
   });
