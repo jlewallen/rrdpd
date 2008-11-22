@@ -126,6 +126,6 @@ class Graphable
   end
 
   def title
-    @source + " " + @name + " " + @counter.to_s + " " + @parameters[:starting]
+    @category + " - " + @source + " - " + @name + " - " + @counter.to_s + " - " + @parameters[:starting]
   end
 end
