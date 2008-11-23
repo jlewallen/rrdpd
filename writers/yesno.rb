@@ -18,8 +18,8 @@ class YesOrNo < RrdWriter
 			command += " --start 1211478990 "
 			command += " DS:ok:GAUGE:600:0:U "
 			command += " DS:fail:GAUGE:600:0:U "
-			command += " RRA:AVERAGE:0.5:1:8640 "    # 24 hours at 1 sample per 10 secs
-			command += " RRA:AVERAGE:0.5:90:2880 "   # 1 month at 1 sample per 15 mins
+			command += " RRA:AVERAGE:0.5:1:25920"    # 72 hours at 1 sample per 10 secs
+			command += " RRA:AVERAGE:0.5:60:4320"    # 1 month at 1 sample per 10 mins
 			command += " RRA:AVERAGE:0.5:2880:5475 " # 5 years at 1 sample per 8 hours
 			rrd(command)
 		end
