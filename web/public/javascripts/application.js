@@ -67,7 +67,7 @@ $(function() {
       this._actions = [];
       this.registerActions();
       this._attachActions();
-      this.afterRender();
+      this.afterRender(model);
     },
 
     place: function(container, dom) {
@@ -80,7 +80,7 @@ $(function() {
       return dom;
     },
 
-    afterRender: function() {
+    afterRender: function(model) {
     },
 
     Action: Class.extend({
@@ -140,6 +140,9 @@ $(function() {
       this.addAction('click', '.renders', '_graphableSelected');
     },
 
+    afterRender: function(model) {
+    },
+
     _graphableSelected: function(ev) {
       var node = $(ev.receiver);                      
       var key = node.property('key');
@@ -191,7 +194,7 @@ $(function() {
       this.addAction('click', '.displays', '_onDisplay');
     },
 
-    afterRender: function() {
+    afterRender: function(model) {
       $(".displays[data-key='" + this._uri + "']").addClass('visible');
     },
 
