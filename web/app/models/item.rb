@@ -43,11 +43,12 @@ class Item
     { 
       :name => @name,
       :description => '',
-      :uri => Urls.graph(@category.name, @name, @sources.default.name, @counters.default.name, '1day')
+      :uri => Urls.graph(@category.name, @name, @sources.default.name, @counters.default.name, '1day'),
+      :preview => browser(nil, nil, { :w => 300, :h => 100 }).to_graphs[0]
     }.to_json
   end
 
-  def browser(source, counter, parameters={})
+  def browser(source=nil, counter=nil, parameters={})
     source = source ? @sources.named?(source) : @sources.default
     counter = counter ? @counters.named?(counter) : @counters.default
     Browser.new(self, source, counter, parameters)
@@ -81,14 +82,14 @@ class Browser
     @graphable = Graphable.new(@item.category.name, @source.name, @item.name, @counter.name, @parameters)
   end
 
-  def graphs
+  def to_graphs
     [ @graphable.to_graph ]
   end
 
   def to_json
     {
       :name => @item.name,
-      :graphs => graphs,
+      :graphs => to_graphs,
       :menu => [
         {
           :title => 'counter',

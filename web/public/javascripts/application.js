@@ -35,9 +35,13 @@ $(function() {
 
     queryAndShow: function(url, container) {
       var self = this;
-      jQuery.getJSON(url, function(data) {
-        self._show(container, self.transform(data));
+      jQuery.getJSON(url, function(model) {
+        self.showModel(container, model);
       });
+    },
+
+    showModel: function(container, model) {
+      this._show(container, this.transform(model));
     },
 
     remove: function() {
@@ -65,9 +69,9 @@ $(function() {
       var dom = this._render(this._templateName, model);
       this._top = this.place($(container), dom);
       this._actions = [];
+      this.afterRender(model);
       this.registerActions();
       this._attachActions();
-      this.afterRender(model);
     },
 
     place: function(container, dom) {
@@ -128,10 +132,26 @@ $(function() {
     }
   });
 
+  global.PreviewController = ApplicationController.extend({
+    initialize: function(model) {
+      this._super('/ejs/preview');
+      this._model = model;
+      this.showModel($("#preview"), model);
+    },
+
+    hide: function() {
+      $('#preview').hide();
+    },
+
+    show: function() {
+      $('#preview').show();
+    }
+  });
+
   global.WelcomeController = ApplicationController.extend({
     initialize: function() {
       this._super('/ejs/menu');
-      this._map = {};
+      this._map = new Array();
       this.queryAndShow('/query/categorized', '#menu');
     },
 
@@ -141,6 +161,7 @@ $(function() {
     },
 
     afterRender: function(model) {
+      this._preview = new PreviewController(model);
     },
 
     _graphableSelected: function(ev) {
@@ -156,6 +177,7 @@ $(function() {
         delete this._map[key];
       }
       node.toggleClass('visible');
+      this._preview.hide();
       return false;
     },
 

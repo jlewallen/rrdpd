@@ -1,0 +1,9 @@
+<% jQuery.each(model, function(i, category) { %>
+  <% jQuery.each(category.items, function(i, item) { %>
+    <a class="renders" data-key="<%= item.uri %>">
+      <img src="<%= item.preview.image %>" />
+    </a>
+<%
+  });
+});
+%>
