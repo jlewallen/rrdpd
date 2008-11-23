@@ -43,8 +43,6 @@ class Item
     { 
       :name => @name,
       :description => '',
-      :sources => @sources.to_a,
-      :counters => @counters.to_a,
       :uri => Urls.graph(@category.name, @name, @sources.default.name, @counters.default.name, '1day')
     }.to_json
   end
