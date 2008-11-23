@@ -102,11 +102,17 @@ class Browser
         {
           :title => 'timespan',
           :submenu => [
-            { :title => '1day',  :graph => @graphable.to_graph({ :starting => '1day'  }) },
-            { :title => '3days', :graph => @graphable.to_graph({ :starting => '3days' }) },
-            { :title => '1week', :graph => @graphable.to_graph({ :starting => '1week' }) },
-            { :title => '2week', :graph => @graphable.to_graph({ :starting => '2week' }) },
-            { :title => '4week', :graph => @graphable.to_graph({ :starting => '4week' }) }
+            { :title => '1hour',   :graph => @graphable.to_graph({ :starting => '1hour'   }) },
+            { :title => '8hours',  :graph => @graphable.to_graph({ :starting => '8hours'  }) },
+            { :title => '1day',    :graph => @graphable.to_graph({ :starting => '1day'    }) },
+            { :title => '2days',   :graph => @graphable.to_graph({ :starting => '2days'   }) },
+            { :title => '3days',   :graph => @graphable.to_graph({ :starting => '3days'   }) },
+            { :title => '1week',   :graph => @graphable.to_graph({ :starting => '1week'   }) },
+            { :title => '2week',   :graph => @graphable.to_graph({ :starting => '2week'   }) },
+            { :title => '4week',   :graph => @graphable.to_graph({ :starting => '4week'   }) },
+            { :title => '3months', :graph => @graphable.to_graph({ :starting => '3months' }) },
+            { :title => '6months', :graph => @graphable.to_graph({ :starting => '6months' }) },
+            { :title => '1year',   :graph => @graphable.to_graph({ :starting => '1year'   }) }
           ]
         }
       ]
