@@ -151,7 +151,7 @@ $(function() {
   global.WelcomeController = ApplicationController.extend({
     initialize: function() {
       this._super('/ejs/menu');
-      this._map = new Array();
+      this._map = {};
       this.queryAndShow('/query/categorized', '#menu');
     },
 
@@ -177,6 +177,11 @@ $(function() {
         delete this._map[key];
       }
       node.toggleClass('visible');
+      this._updatePreview();
+      return false;
+    },
+
+    _updatePreview: function() {
       if ($('.visible').length > 0)
       {
         this._preview.hide();
@@ -185,7 +190,6 @@ $(function() {
       {
         this._preview.show();
       }
-      return false;
     },
 
     _clearAllGraphs: function() {
@@ -193,6 +197,7 @@ $(function() {
       jQuery.each(this._map, function(k, v) {
         v.remove();
       });
+      this._updatePreview();
       this._map = {}; 
       return false;
     }
