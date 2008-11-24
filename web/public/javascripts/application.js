@@ -177,7 +177,14 @@ $(function() {
         delete this._map[key];
       }
       node.toggleClass('visible');
-      this._preview.hide();
+      if ($('.visible').length > 0)
+      {
+        this._preview.hide();
+      }
+      else
+      {
+        this._preview.show();
+      }
       return false;
     },
 
