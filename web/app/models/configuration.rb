@@ -1,10 +1,22 @@
 class Configuration
   attr_reader :data
   attr_reader :categories
+  attr_reader :username
+  attr_reader :password
 
   def initialize(data)
     @data = data
     @categories = [ CategoryDefinition.new('WWW', /^www-(.+)/) ]
+    @username = 'admin'
+    @password = 'admin'
+  end
+
+  def self.global=(value)
+    @@cfg = value
+  end
+
+  def self.global
+    @@cfg
   end
 end
 

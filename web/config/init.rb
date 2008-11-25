@@ -19,7 +19,7 @@ Merb::BootLoader.before_app_loads do
 end
  
 Merb::BootLoader.after_app_loads do
-  DataManager.cfg = Configuration.new(Pathname.new("/home/jlewalle/rrdpd-data"))
+  Configuration.global = Configuration.new(Pathname.new("/home/jlewalle/rrdpd-data"))
 
   Merb.add_mime_type(:png, :to_png, %w[image/png])
 end

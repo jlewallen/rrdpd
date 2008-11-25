@@ -11,14 +11,6 @@ class Urls
 end
 
 class DataManager
-	def self.cfg=(value)
-		@@cfg = value
-	end
-
-	def self.cfg
-		@@cfg
-	end
-
   def self.find_item(category, name)
     categories = find_categories
     category = categories[category]
@@ -48,11 +40,11 @@ class DataManager
 
   private
   def self.find_databases
-		@@databases ||= Finder.new(cfg).databases
+		@@databases ||= Finder.new(Configuration.global).databases
   end
 
   def self.find_categories
-    @@categories ||= ModelBuilder.new(cfg).categories
+    @@categories ||= ModelBuilder.new(Configuration.global).categories
   end
 end
 
