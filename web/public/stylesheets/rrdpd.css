@@ -104,9 +104,20 @@ img {
 #preview {
 }
 
+#preview div {
+  float: left;
+}
+
 #preview img {
   padding-left: 5px;
-  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+#preview h2 {
+  font-size: 10pt;
+  text-transform: uppercase;
+  margin-left: 5px;
+  width: 300px;
 }
 
 /* ----------------------------------------------------------------------------
