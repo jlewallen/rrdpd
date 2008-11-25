@@ -1,18 +1,21 @@
+require 'yaml'
+
 class Configuration
   attr_reader :data
   attr_reader :categories
   attr_reader :username
   attr_reader :password
 
-  def initialize(data)
+  def initialize(data, username, password)
     @data = data
     @categories = [ CategoryDefinition.new('WWW', /^www-(.+)/) ]
-    @username = 'admin'
-    @password = 'admin'
+    @username = username
+    @password = password
   end
 
-  def self.global=(value)
-    @@cfg = value
+  def self.load(path)
+    settings = YAML.load_file(path)
+    @@cfg = Configuration.new(Pathname.new(settings['data']), settings['username'], settings['password'])
   end
 
   def self.global

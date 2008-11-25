@@ -1,6 +1,7 @@
 *.swp
 data
 rrdpd.conf
+rrdpd-web.conf
 /log
 /web/.DS_Store
 /web/log

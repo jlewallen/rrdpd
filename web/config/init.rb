@@ -19,7 +19,6 @@ Merb::BootLoader.before_app_loads do
 end
  
 Merb::BootLoader.after_app_loads do
-  Configuration.global = Configuration.new(Pathname.new("/home/jlewalle/rrdpd-data"))
-
+  Configuration.load("config/rrdpd-web.conf")
   Merb.add_mime_type(:png, :to_png, %w[image/png])
 end
