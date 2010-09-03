@@ -8,8 +8,6 @@ class Urls
   def self.graph(category, name, source, counter, starting)
     url(:graph, :category => category, :name => name, :source => source, :counter => counter, :starting => starting)
   end
-  #match('/:source/:name/:counter/:starting/:ending/:w/:h', :source => /[^\/,;?]+/).to(:controller => 'render', :action => 'graph').name(:render)
-  #match('/:category/:name/:source/:counter/:starting', :name => /[^\/,;?]+/).to(:controller => 'query', :action => 'graph').name(:graph)
 
   def self.url(name, p)
     if defined?(Merb)

@@ -19,10 +19,10 @@ class Category
     @items.select { |item| item.name == name }.first
   end
 
-  def to_json
-    { 
+  def as_json(options={})
+    {
       :name => @name,
       :items => @items.to_a
-    }.to_json
+    }
   end
 end

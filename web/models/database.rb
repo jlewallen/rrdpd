@@ -18,6 +18,6 @@ class DatabaseOnDisk
 	end
 
   def uri(starting='1days', ending='now', w=600, h=200)
-    Merb::Router.url(:render, :source => @source, :name => @name, :counter => @counter, :starting => starting, :ending => ending, :w => w, :h => h)
+    Urls.url(:render, :source => @source, :name => @name, :counter => @counter, :starting => starting, :ending => ending, :w => w, :h => h)
   end
 end

@@ -2,7 +2,7 @@ class Source
   DEFAULT_NAME = 'ALL'
 
   include Comparable
-  
+
   attr_reader :name
 
   def initialize(name)
@@ -13,10 +13,10 @@ class Source
     @name =~ /ALL/i
   end
 
-  def to_json
-    { 
+  def as_json(options={})
+    {
       :name => @name
-    }.to_json
+    }
   end
 
   def <=>(anOther)

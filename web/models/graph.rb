@@ -5,11 +5,11 @@ class Graph
     @uri = uri
   end
 
-  def to_json
+  def as_json(options={})
     {
       :title => @title,
       :image => @image,
       :uri => @uri
-    }.to_json
+    }
   end
 end
