@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
 require 'pathname'
+require 'rrdtool'
 require 'writers/base.rb'
 require 'writers/yesno.rb'
 require 'writers/quartiles.rb'
@@ -55,7 +56,7 @@ class SampleSetKey
   def eql?(o)
     o.is_a?(SampleSetKey) && @name == o.name
   end
-  
+
   def hash
     @name.hash
   end
@@ -141,7 +142,7 @@ class Slice
     summaries = @sets.values.map { |v| v.to_s }
     @time.to_s + ": " + summaries.sort.join(" ")
   end
-  
+
   private
   def get(key)
     if !@sets.has_key?(key) then

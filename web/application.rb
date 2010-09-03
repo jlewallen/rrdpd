@@ -7,6 +7,7 @@ require "web/basic_authentication"
 require "web/model"
 require "active_support"
 require "active_support/json"
+require 'rrdtool'
 
 Camping.goes :Graphs
 
