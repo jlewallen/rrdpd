@@ -1,6 +1,6 @@
 require 'set'
 
-class SetWithefault < SortedSet
+class SetWithDefault < SortedSet
   def default
     self.each do |v|
       return v if v.is_default
@@ -27,8 +27,8 @@ class Item
   def initialize(name, category)
     @name = name
     @category = category
-    @sources = SetWithefault.new
-    @counters = SetWithefault.new
+    @sources = SetWithDefault.new
+    @counters = SetWithDefault.new
   end
 
   def add_counter(type)
@@ -39,13 +39,13 @@ class Item
     @sources << source
   end
 
-  def to_json
-    { 
+  def as_json(options={})
+    {
       :name => @name,
       :description => '',
       :uri => Urls.graph(@category.name, @name, @sources.default.name, @counters.default.name, '1day'),
       :preview => browser(nil, nil, { :w => 300, :h => 100 }).to_graphs[0]
-    }.to_json
+    }
   end
 
   def browser(source=nil, counter=nil, parameters={})
@@ -65,11 +65,11 @@ class MenuEntry
     @children = children
   end
 
-  def to_json
+  def as_json(options={})
     {
       :title => @title,
       :children => @children
-    }.to_json
+    }
   end
 end
 
@@ -86,7 +86,7 @@ class Browser
     [ @graphable.to_graph ]
   end
 
-  def to_json
+  def as_json(options={})
     {
       :name => @item.name,
       :graphs => to_graphs,
@@ -115,7 +115,7 @@ class Browser
           ]
         }
       ]
-    }.to_json
+    }
   end
 end
 
@@ -147,7 +147,7 @@ class Graphable
   end
 
   def image_uri(p)
-    Merb::Router.url(:render, p)
+    Urls.url(:render, p)
   end
 
   def title

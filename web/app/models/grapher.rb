@@ -11,7 +11,7 @@ end
 class Grapher
 	def graph(database, starting, ending, w, h)
 		parts = []
-		parts << "/usr/bin/rrdtool graph"
+		parts << "/opt/local/bin/rrdtool graph"
 		parts << "-"
 		parts << "-w " + w
 		parts << "-h " + h

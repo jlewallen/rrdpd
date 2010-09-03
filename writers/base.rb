@@ -18,6 +18,6 @@ class RrdWriter
 
 	def rrd(command)
 		Configuration.log.debug(command)
-		system("/usr/bin/rrdtool #{command}")
+		system("/opt/local/bin/rrdtool #{command}")
 	end
 end

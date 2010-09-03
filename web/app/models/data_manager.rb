@@ -6,7 +6,26 @@ class Urls
   end
 
   def self.graph(category, name, source, counter, starting)
-    Merb::Router.url(:graph, :category => category, :name => name, :source => source, :counter => counter, :starting => starting)
+    url(:graph, :category => category, :name => name, :source => source, :counter => counter, :starting => starting)
+  end
+  #match('/:source/:name/:counter/:starting/:ending/:w/:h', :source => /[^\/,;?]+/).to(:controller => 'render', :action => 'graph').name(:render)
+  #match('/:category/:name/:source/:counter/:starting', :name => /[^\/,;?]+/).to(:controller => 'query', :action => 'graph').name(:graph)
+
+  def self.url(name, p)
+    if defined?(Merb)
+      Merb::Router.url(name, p)
+    else
+      case name
+      when :render
+        "/#{p[:source]}/#{p[:name]}/#{p[:counter]}/#{p[:starting]}/#{p[:ending]}/#{p[:w]}/#{p[:h]}"
+      when :item
+        "/#{p[:category]}/#{p[:name]}/#{p[:source]}/#{p[:counter]}"
+      when :graph
+        "/#{p[:category]}/#{p[:name]}/#{p[:source]}/#{p[:counter]}/#{p[:starting]}"
+      else
+        raise "Unexpected #{name}"
+      end
+    end
   end
 end
 
