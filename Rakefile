@@ -1,3 +1,6 @@
 task :setup do
-  File.symlink "", ""
+end
+
+task :run do
+  system "bundle exec camping web/application.rb"
 end
