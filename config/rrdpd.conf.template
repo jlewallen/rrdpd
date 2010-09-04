@@ -1,3 +1,6 @@
 data: /location/of/data/directory
 slice-interval: 10
 write-interval: 60
+web:
+  username: admin
+  password: admin

@@ -21,7 +21,7 @@ module Graphs
   module_function :authenticate
 
   def service(*a)
-    Configuration.load(Graphs.path.join("config/rrdpd-web.conf"))
+    Configuration.load(Graphs.path.join("../config/rrdpd.conf"))
     super(*a)
   end
 

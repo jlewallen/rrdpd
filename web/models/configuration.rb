@@ -3,23 +3,31 @@ require 'yaml'
 class Configuration
   attr_reader :data
   attr_reader :categories
-  attr_reader :username
-  attr_reader :password
+  attr_reader :web
 
-  def initialize(data, username, password)
+  def initialize(data, web)
     @data = data
     @categories = [ CategoryDefinition.new('WWW', /^www-(.+)/) ]
-    @username = username
-    @password = password
+    @web = web
   end
 
   def self.load(path)
     settings = YAML.load_file(path)
-    @@cfg = Configuration.new(Pathname.new(settings['data']), settings['username'], settings['password'])
+    @@cfg = Configuration.new(Pathname.new(settings['data']), WebConfiguration.new(settings['web']))
   end
 
   def self.global
     @@cfg
+  end
+end
+
+class WebConfiguration
+  attr_reader :username
+  attr_reader :password
+
+  def initialize(cfg)
+    @username = cfg['username']
+    @password = cfg['password']
   end
 end
 

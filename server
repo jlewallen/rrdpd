@@ -43,7 +43,7 @@ end
 
 class ConfigurationFile
   def initialize()
-    @settings = YAML.load_file("rrdpd.conf")
+    @settings = YAML.load_file("config/rrdpd.conf")
   end
 
   def to_configuration
