@@ -102,6 +102,7 @@ class Browser
           :title => 'timespan',
           :submenu => [
             { :title => '1hour',   :graph => @graphable.to_graph({ :starting => '1hour'   }) },
+            { :title => '4hours',  :graph => @graphable.to_graph({ :starting => '4hours'  }) },
             { :title => '8hours',  :graph => @graphable.to_graph({ :starting => '8hours'  }) },
             { :title => '1day',    :graph => @graphable.to_graph({ :starting => '1day'    }) },
             { :title => '2days',   :graph => @graphable.to_graph({ :starting => '2days'   }) },
