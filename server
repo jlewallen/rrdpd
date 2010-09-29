@@ -57,8 +57,6 @@ end
 cfg_file = ConfigurationFile.new
 cfg = cfg_file.to_configuration
 p cfg
-Configuration.log = Logger.new(STDOUT)
-Configuration.log.level = Logger::INFO
 writers = [ YesOrNo.new(cfg), Quartiles.new(cfg) ]
 slices = Slices.new(cfg, writers)
 server = UdpServer.new(slices, cfg)

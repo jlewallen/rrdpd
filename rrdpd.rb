@@ -26,7 +26,11 @@ class Configuration
   end
 
   def Configuration.log
-    @@log
+    @@log || begin
+      logger = Logger.new(STDOUT)
+      logger.level = Logger::INFO
+      logger
+    end
   end
 end
 
