@@ -85,19 +85,19 @@ class Slices
     @writers = writers
   end
 
-  def add(message)
-    get_slice.add(message)
+  def add(message, time=Time.now)
+    get_slice(time).add(message)
   end
 
-  def rollup(force=false)
-    get_closed_slices(force).each do |slice|
+  def rollup(force=false, time=Time.now)
+    get_closed_slices(force, time).each do |slice|
       slice.rollup(@writers)
     end
   end
 
   private
-    def get_closed_slices(force)
-      open = get_slice_number
+    def get_closed_slices(force, time)
+      open = get_slice_number(time)
       closed = []
       @slices.delete_if do |key, value|
         closing = (key < open) || force
@@ -109,12 +109,12 @@ class Slices
       closed.sort! { |a, b| a.time <=> b.time }
     end
 
-    def get_slice_number
-      (Time.now.to_i / @cfg.slice_interval).floor
+    def get_slice_number(time)
+      (time.to_i / @cfg.slice_interval).floor
     end
 
-    def get_slice
-      number = get_slice_number
+    def get_slice(time)
+      number = get_slice_number(time)
       if !@slices.has_key?(number) then
         @slices[number] = Slice.new(number * @cfg.slice_interval)
       end
