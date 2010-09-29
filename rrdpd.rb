@@ -96,30 +96,30 @@ class Slices
   end
 
   private
-  def get_closed_slices(force)
-    open = get_slice_number
-    closed = []
-    @slices.delete_if do |key, value|
-      closing = (key < open) || force
-      if closing then
-        closed << value
+    def get_closed_slices(force)
+      open = get_slice_number
+      closed = []
+      @slices.delete_if do |key, value|
+        closing = (key < open) || force
+        if closing then
+          closed << value
+        end
+        closing
       end
-      closing
+      closed.sort! { |a, b| a.time <=> b.time }
     end
-    closed.sort! { |a, b| a.time <=> b.time }
-  end
 
-  def get_slice_number
-    (Time.now.to_i / @cfg.slice_interval).floor
-  end
-
-  def get_slice
-    number = get_slice_number
-    if !@slices.has_key?(number) then
-      @slices[number] = Slice.new(number * @cfg.slice_interval)
+    def get_slice_number
+      (Time.now.to_i / @cfg.slice_interval).floor
     end
-    @slices[number]
-  end
+
+    def get_slice
+      number = get_slice_number
+      if !@slices.has_key?(number) then
+        @slices[number] = Slice.new(number * @cfg.slice_interval)
+      end
+      @slices[number]
+    end
 end
 
 class Slice
@@ -148,12 +148,12 @@ class Slice
   end
 
   private
-  def get(key)
-    if !@sets.has_key?(key) then
-      @sets[key] = SampleSet.new(@time, key)
+    def get(key)
+      if !@sets.has_key?(key) then
+        @sets[key] = SampleSet.new(@time, key)
+      end
+      @sets[key]
     end
-    @sets[key]
-  end
 end
 
 class SampleSet
