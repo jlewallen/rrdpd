@@ -21,12 +21,14 @@ class Configuration
     6311
   end
 
-  def Configuration.log=(log)
+  @@log = nil
+
+  def self.log=(log)
     @@log = log
   end
 
-  def Configuration.log
-    @@log || begin
+  def self.log
+    @@log ||= begin
       logger = Logger.new(STDOUT)
       logger.level = Logger::INFO
       logger
@@ -93,6 +95,10 @@ class Slices
     get_closed_slices(force, time).each do |slice|
       slice.rollup(@writers)
     end
+  end
+
+  def debug
+    [ @slices.size, @slices.values.map(&:to_s) ]
   end
 
   private
