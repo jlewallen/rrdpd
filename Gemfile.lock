@@ -10,7 +10,7 @@ GEM
       abstract (>= 1.0.0)
     markaby (0.7.1)
       builder (>= 2.0.0)
-    rack (1.2.1)
+    rack (2.2.3)
     tilt (1.0.1)
 
 PLATFORMS
